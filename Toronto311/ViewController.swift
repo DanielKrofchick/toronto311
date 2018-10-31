@@ -9,6 +9,10 @@
 import UIKit
 import MapKit
 
+extension CLLocation {
+    static let toronto = CLLocation(latitude: 43.6532, longitude: -79.3832)
+}
+
 class ViewController: UIViewController {
     let map = MKMapView()
     
@@ -24,69 +28,87 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let initialLocation = CLLocation(latitude: 43.6532, longitude: -79.3832)
-        centerMapOnLocation(location: initialLocation)
+        centerMapOnLocation(location: .toronto)
         
-//        FireStation.importCSV().forEach({ (fireStation) in
-//            print(fireStation)
-//            map.addAnnotation(fireStation)
-//        })
-        
-        let data = DataImporter.importJSON("ServiceRequests")
-        if let string = String(data: data, encoding: String.Encoding.utf8) {
-            print(string)
-        }
-
-        do {
-            try JSONDecoder()
-                .decode(ServiceRequestContainer.self, from: data)
-                .service_requests
-                .forEach({ (serviceRequest) in
-                self.map.addAnnotation(serviceRequest)
-            })
-        } catch {
-            print(error)
-        }
-        
-//        api.getServiceRequests { (data, response, error) in
-//            if error != nil {
-//                print("error", (response as? HTTPURLResponse)?.statusCode ?? "")
-//            } else if
-//                let data = data,
-//                let json = try? JSONSerialization.jsonObject(with: data, options: []),
-//                let dictioary = json as? [String: Any]
-//            {
-//                if let container = try? JSONDecoder().decode(ServiceRequestContainer.self, from: data) {
-//                    container.serviceRequests.forEach({ (serviceRequest) in
-//                        self.map.addAnnotation(serviceRequest)
-//                    })
-//                }
-//
-//                    print(dictioary.json() ?? "")
-//            }
-//        }
-        
-//                api.getServiceList { (data, response, error) in
-//                    if error != nil {
-//                        print("error", (response as? HTTPURLResponse)?.statusCode ?? "")
-//                    } else if
-//                        let data = data,
-//                        let json = try? JSONSerialization.jsonObject(with: data, options: []),
-//                        let array = json as? [[AnyHashable: Any]]
-//                    {
-//                        array.forEach({ (dictionary) in
-//                            print(dictionary.json() ?? "")
-//                        })
-//                    }
-//                }
+//        annotateFirestations()
+//        annotateServiceRequestsCached()
+//        annotateServiceRequestsAPI()
+        getServiceListCached()
+//        getServiceListAPI()
     }
     
-    let regionRadius: CLLocationDistance = 1000
     func centerMapOnLocation(location: CLLocation) {
+        let regionRadius: CLLocationDistance = 1000
         let coordinateRegion = MKCoordinateRegion(center: location.coordinate,
                                                   latitudinalMeters: regionRadius,
                                                   longitudinalMeters: regionRadius)
         map.setRegion(coordinateRegion, animated: true)
+    }
+}
+
+extension ViewController {
+    func annotateFirestations() {
+        FireStation.importCSV().forEach({ (fireStation) in
+            print(fireStation)
+            map.addAnnotation(fireStation)
+        })
+    }
+    
+    func annotateServiceRequestsCached() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            let data = DataImporter.importJSON("ServiceRequests")
+            self?.annotateServiceRequests(data)
+        }
+    }
+    
+    func annotateServiceRequestsAPI() {
+        API.getServiceRequests { [weak self] (data, response, error) in
+            if error != nil {
+                print("error", (response as? HTTPURLResponse)?.statusCode ?? "")
+            } else if let data = data {
+                self?.annotateServiceRequests(data)
+            }
+        }
+    }
+    
+    private func annotateServiceRequests(_ data: Data) {
+        do {
+            let requests = try JSONDecoder()
+                .decode(ServiceRequestContainer.self, from: data)
+                .service_requests
+            DispatchQueue.main.async {
+                requests.forEach {self.map.addAnnotation($0)}
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
+    func getServiceListCached() {
+        let data = DataImporter.importJSON("ServiceList")
+        getServiceList(data)
+    }
+    
+    func getServiceListAPI() {
+        API.getServiceList { [weak self] (data, response, error) in
+            if error != nil {
+                print("error", (response as? HTTPURLResponse)?.statusCode ?? "")
+            } else if let data = data {
+                self?.getServiceList(data)
+            }
+        }
+    }
+    
+    func getServiceList(_ data: Data) {
+        do {
+            let types = try JSONDecoder()
+                .decode([ServiceType].self, from: data)
+            DispatchQueue.main.async {
+                types.forEach {print($0)}
+            }
+        } catch {
+            print(error)
+        }
     }
 }
 

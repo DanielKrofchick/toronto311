@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4C4F809B2189387400EBD4DE /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 4C4F809A2189387400EBD4DE /* Cartfile */; };
 		4C4F809F21893E6400EBD4DE /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 4C4F809E21893E6400EBD4DE /* .swiftlint.yml */; };
+		4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4F80A22189603A00EBD4DE /* ServiceType.swift */; };
 		4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4F92186A13400F72BDC /* AppDelegate.swift */; };
 		4C7DC4FC2186A13400F72BDC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FB2186A13400F72BDC /* ViewController.swift */; };
 		4C7DC4FF2186A13400F72BDC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FD2186A13400F72BDC /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		4C4F809A2189387400EBD4DE /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		4C4F809E21893E6400EBD4DE /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
+		4C4F80A22189603A00EBD4DE /* ServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceType.swift; sourceTree = "<group>"; };
 		4C7DC4F62186A13400F72BDC /* Toronto311.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toronto311.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C7DC4F92186A13400F72BDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4C7DC4FB2186A13400F72BDC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				4C7DC4FB2186A13400F72BDC /* ViewController.swift */,
 				4C7DC5102187DE6A00F72BDC /* FireStation.swift */,
 				4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */,
+				4C4F80A22189603A00EBD4DE /* ServiceType.swift */,
 				4C7DC51621880D5300F72BDC /* ServiceCodes.swift */,
 				4C7DC5122187E04700F72BDC /* DataImporter.swift */,
 				4C7DC50B2186A16200F72BDC /* API.swift */,
@@ -199,6 +202,7 @@
 				4C7DC5132187E04700F72BDC /* DataImporter.swift in Sources */,
 				4C7DC50C2186A16200F72BDC /* API.swift in Sources */,
 				4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */,
+				4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

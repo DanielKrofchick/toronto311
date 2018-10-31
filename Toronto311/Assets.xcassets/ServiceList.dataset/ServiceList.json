@@ -1,0 +1,61 @@
+[
+{
+  "description" : "Use this service to report graffiti on a City road. You can call 311 at any time for help if you experience difficulties completing this request from your mobile device.",
+  "service_code" : "CSROWC-05",
+  "group" : "Graffiti",
+  "type" : "batch",
+  "keywords" : "graffiti, road",
+  "service_name" : "Graffiti on a City road",
+  "metadata" : true
+}
+,
+{
+  "description" : "Use this service to report graffiti on a City bridge. You can call 311 at any time for help if you experience difficulties completing this request from your mobile device.",
+  "service_code" : "CSROWBM-03",
+  "group" : "Graffiti",
+  "type" : "batch",
+  "keywords" : "graffiti, bridge",
+  "service_name" : "Graffiti on a City bridge",
+  "metadata" : true
+}
+,
+{
+  "description" : "Use this service to report a pothole on public property. You can call 311 at any time for help if you experience difficulties completing this request from your mobile device.",
+  "service_code" : "CSROWR-12",
+  "group" : "Pothole",
+  "type" : "batch",
+  "keywords" : "pothole",
+  "service_name" : "Report minor pothole damage",
+  "metadata" : true
+}
+,
+{
+  "description" : "Use this service to report graffiti on private property (business or residential) for the City to investigate as part of bylaw enforcement. You can call 311 at any time for help if you experience difficulties completing this request from your mobile device.",
+  "service_code" : 30102,
+  "group" : "Graffiti",
+  "type" : "batch",
+  "keywords" : "graffiti,private property, building",
+  "service_name" : "Graffiti on private property",
+  "metadata" : true
+}
+,
+{
+  "description" : "Use this service to report graffiti on a City sidewalk. You can call 311 at any time for help if you experience difficulties completing this request from your mobile device.",
+  "service_code" : "CSROSC-14",
+  "group" : "Graffiti",
+  "type" : "batch",
+  "keywords" : "graffiti, sidewalk",
+  "service_name" : "Graffiti on a City sidewalk",
+  "metadata" : true
+}
+,
+{
+  "description" : "Use this service to report graffiti on a street litter bin maintained by the City. You can call 311 at any time for help if you experience difficulties completing this request from your mobile device.",
+  "service_code" : "SWLMALB-02",
+  "group" : "Graffiti",
+  "type" : "batch",
+  "keywords" : "graffiti, litter bin",
+  "service_name" : "Graffiti on a City litter bin",
+  "metadata" : false
+}
+]
