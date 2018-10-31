@@ -7,14 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C4F809B2189387400EBD4DE /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 4C4F809A2189387400EBD4DE /* Cartfile */; };
+		4C4F809F21893E6400EBD4DE /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 4C4F809E21893E6400EBD4DE /* .swiftlint.yml */; };
 		4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4F92186A13400F72BDC /* AppDelegate.swift */; };
 		4C7DC4FC2186A13400F72BDC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FB2186A13400F72BDC /* ViewController.swift */; };
 		4C7DC4FF2186A13400F72BDC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FD2186A13400F72BDC /* Main.storyboard */; };
 		4C7DC5012186A13400F72BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC5002186A13400F72BDC /* Assets.xcassets */; };
 		4C7DC5042186A13400F72BDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC5022186A13400F72BDC /* LaunchScreen.storyboard */; };
+		4C7DC50C2186A16200F72BDC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC50B2186A16200F72BDC /* API.swift */; };
+		4C7DC50F2186B60B00F72BDC /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC50E2186B60B00F72BDC /* Dictionary.swift */; };
+		4C7DC5112187DE6A00F72BDC /* FireStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC5102187DE6A00F72BDC /* FireStation.swift */; };
+		4C7DC5132187E04700F72BDC /* DataImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC5122187E04700F72BDC /* DataImporter.swift */; };
+		4C7DC5152187F85A00F72BDC /* ServiceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */; };
+		4C7DC51721880D5300F72BDC /* ServiceCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC51621880D5300F72BDC /* ServiceCodes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C4F809A2189387400EBD4DE /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
+		4C4F809E21893E6400EBD4DE /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		4C7DC4F62186A13400F72BDC /* Toronto311.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toronto311.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C7DC4F92186A13400F72BDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4C7DC4FB2186A13400F72BDC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +32,12 @@
 		4C7DC5002186A13400F72BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C7DC5032186A13400F72BDC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4C7DC5052186A13500F72BDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C7DC50B2186A16200F72BDC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		4C7DC50E2186B60B00F72BDC /* Dictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
+		4C7DC5102187DE6A00F72BDC /* FireStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStation.swift; sourceTree = "<group>"; };
+		4C7DC5122187E04700F72BDC /* DataImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataImporter.swift; sourceTree = "<group>"; };
+		4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceRequest.swift; sourceTree = "<group>"; };
+		4C7DC51621880D5300F72BDC /* ServiceCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCodes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,12 +72,28 @@
 			children = (
 				4C7DC4F92186A13400F72BDC /* AppDelegate.swift */,
 				4C7DC4FB2186A13400F72BDC /* ViewController.swift */,
+				4C7DC5102187DE6A00F72BDC /* FireStation.swift */,
+				4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */,
+				4C7DC51621880D5300F72BDC /* ServiceCodes.swift */,
+				4C7DC5122187E04700F72BDC /* DataImporter.swift */,
+				4C7DC50B2186A16200F72BDC /* API.swift */,
+				4C7DC50D2186B5F800F72BDC /* Extensions */,
 				4C7DC4FD2186A13400F72BDC /* Main.storyboard */,
 				4C7DC5002186A13400F72BDC /* Assets.xcassets */,
 				4C7DC5022186A13400F72BDC /* LaunchScreen.storyboard */,
 				4C7DC5052186A13500F72BDC /* Info.plist */,
+				4C4F809A2189387400EBD4DE /* Cartfile */,
+				4C4F809E21893E6400EBD4DE /* .swiftlint.yml */,
 			);
 			path = Toronto311;
+			sourceTree = "<group>";
+		};
+		4C7DC50D2186B5F800F72BDC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4C7DC50E2186B60B00F72BDC /* Dictionary.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,6 +106,7 @@
 				4C7DC4F22186A13400F72BDC /* Sources */,
 				4C7DC4F32186A13400F72BDC /* Frameworks */,
 				4C7DC4F42186A13400F72BDC /* Resources */,
+				4C4F809C21893C0000EBD4DE /* Swiftlint */,
 			);
 			buildRules = (
 			);
@@ -122,20 +155,49 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C4F809F21893E6400EBD4DE /* .swiftlint.yml in Resources */,
 				4C7DC5042186A13400F72BDC /* LaunchScreen.storyboard in Resources */,
 				4C7DC5012186A13400F72BDC /* Assets.xcassets in Resources */,
+				4C4F809B2189387400EBD4DE /* Cartfile in Resources */,
 				4C7DC4FF2186A13400F72BDC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4C4F809C21893C0000EBD4DE /* Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Swiftlint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4C7DC4F22186A13400F72BDC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C7DC5152187F85A00F72BDC /* ServiceRequest.swift in Sources */,
 				4C7DC4FC2186A13400F72BDC /* ViewController.swift in Sources */,
+				4C7DC50F2186B60B00F72BDC /* Dictionary.swift in Sources */,
+				4C7DC5112187DE6A00F72BDC /* FireStation.swift in Sources */,
+				4C7DC51721880D5300F72BDC /* ServiceCodes.swift in Sources */,
+				4C7DC5132187E04700F72BDC /* DataImporter.swift in Sources */,
+				4C7DC50C2186A16200F72BDC /* API.swift in Sources */,
 				4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -217,6 +279,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-function-bodies=200 -Xfrontend -warn-long-expression-type-checking=200";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -271,6 +334,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-function-bodies=200 -Xfrontend -warn-long-expression-type-checking=200";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
