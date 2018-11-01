@@ -3,6 +3,7 @@ disabled_rules:
 - trailing_whitespace
 - trailing_comma
 - line_length
+- void_return
 
 excluded:
 - Carthage

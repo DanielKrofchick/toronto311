@@ -22,8 +22,8 @@ enum ServiceCodes: String {
         case .CSROWC05: return .green
         case .CSROSC14: return .blue
         case .CSROWR12: return .orange
-        case .C30102: return .lightGray
-        case .SWLMALB02: return .brown
+        case .C30102: return .magenta
+        case .SWLMALB02: return .cyan
         }
     }
 }
