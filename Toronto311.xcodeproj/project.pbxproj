@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C685EE4B59A750EA8DF830B /* Pods_Toronto311.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 980C343EB391F94712ABD384 /* Pods_Toronto311.framework */; };
+		4C28C337218D31AF00542A3B /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C28C336218D31AF00542A3B /* SWXMLHash.framework */; };
+		4C28C339218D3D0A00542A3B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4C28C338218D3D0A00542A3B /* Podfile */; };
 		4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4F80A22189603A00EBD4DE /* ServiceType.swift */; };
 		4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4F92186A13400F72BDC /* AppDelegate.swift */; };
 		4C7DC4FC2186A13400F72BDC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FB2186A13400F72BDC /* ViewController.swift */; };
@@ -22,11 +25,12 @@
 		4CBD6C7F218A90D2005E6FE6 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 4CBD6C7E218A90D2005E6FE6 /* .gitignore */; };
 		4CBD6C8D218AA19D005E6FE6 /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 4CBD6C8C218AA19D005E6FE6 /* Cartfile */; };
 		4CBD6C91218AA254005E6FE6 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 4CBD6C90218AA254005E6FE6 /* .swiftlint.yml */; };
-		4CBD6C92218AA7C6005E6FE6 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CBD6C8A218AA038005E6FE6 /* SWXMLHash.framework */; };
 		4CBD6C94218AA80E005E6FE6 /* CLLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBD6C93218AA80E005E6FE6 /* CLLocation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C28C336218D31AF00542A3B /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SWXMLHash.framework; path = Carthage/Build/iOS/SWXMLHash.framework; sourceTree = "<group>"; };
+		4C28C338218D3D0A00542A3B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		4C4F80A22189603A00EBD4DE /* ServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceType.swift; sourceTree = "<group>"; };
 		4C7DC4F62186A13400F72BDC /* Toronto311.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toronto311.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C7DC4F92186A13400F72BDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -42,10 +46,12 @@
 		4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceRequest.swift; sourceTree = "<group>"; };
 		4C7DC51621880D5300F72BDC /* ServiceCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCodes.swift; sourceTree = "<group>"; };
 		4CBD6C7E218A90D2005E6FE6 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
-		4CBD6C8A218AA038005E6FE6 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SWXMLHash.framework; path = Toronto311/Frameworks/SWXMLHash.framework; sourceTree = "<group>"; };
 		4CBD6C8C218AA19D005E6FE6 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
 		4CBD6C90218AA254005E6FE6 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
 		4CBD6C93218AA80E005E6FE6 /* CLLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocation.swift; sourceTree = "<group>"; };
+		938412E85F8F9B59B673DF17 /* Pods-Toronto311.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.debug.xcconfig"; sourceTree = "<group>"; };
+		980C343EB391F94712ABD384 /* Pods_Toronto311.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Toronto311.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9B3A5801A3E242C550F66F6 /* Pods-Toronto311.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.release.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,19 +59,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CBD6C92218AA7C6005E6FE6 /* SWXMLHash.framework in Frameworks */,
+				4C28C337218D31AF00542A3B /* SWXMLHash.framework in Frameworks */,
+				1C685EE4B59A750EA8DF830B /* Pods_Toronto311.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		217398B7DD5F1DD93D3C9F87 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				938412E85F8F9B59B673DF17 /* Pods-Toronto311.debug.xcconfig */,
+				E9B3A5801A3E242C550F66F6 /* Pods-Toronto311.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		4C7DC4ED2186A13400F72BDC = {
 			isa = PBXGroup;
 			children = (
 				4C7DC4F82186A13400F72BDC /* Toronto311 */,
 				4C7DC4F72186A13400F72BDC /* Products */,
 				4CBD6C80218A9381005E6FE6 /* Frameworks */,
+				217398B7DD5F1DD93D3C9F87 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,6 +108,7 @@
 				4C7DC5022186A13400F72BDC /* LaunchScreen.storyboard */,
 				4C7DC5052186A13500F72BDC /* Info.plist */,
 				4CBD6C8C218AA19D005E6FE6 /* Cartfile */,
+				4C28C338218D3D0A00542A3B /* Podfile */,
 				4CBD6C7E218A90D2005E6FE6 /* .gitignore */,
 				4CBD6C90218AA254005E6FE6 /* .swiftlint.yml */,
 			);
@@ -109,7 +127,8 @@
 		4CBD6C80218A9381005E6FE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4CBD6C8A218AA038005E6FE6 /* SWXMLHash.framework */,
+				4C28C336218D31AF00542A3B /* SWXMLHash.framework */,
+				980C343EB391F94712ABD384 /* Pods_Toronto311.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -132,11 +151,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4C7DC5082186A13500F72BDC /* Build configuration list for PBXNativeTarget "Toronto311" */;
 			buildPhases = (
+				13CCAB1DA31E30C2866294BA /* [CP] Check Pods Manifest.lock */,
 				4C7DC4F22186A13400F72BDC /* Sources */,
 				4C7DC4F32186A13400F72BDC /* Frameworks */,
 				4C7DC4F42186A13400F72BDC /* Resources */,
 				4C4F809C21893C0000EBD4DE /* Swiftlint */,
 				4CBD6C83218A93EA005E6FE6 /* Carthage */,
+				30E0A389376B7E9116A6522C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -190,6 +211,7 @@
 				4C7DC5042186A13400F72BDC /* LaunchScreen.storyboard in Resources */,
 				4C7DC5012186A13400F72BDC /* Assets.xcassets in Resources */,
 				4CBD6C7F218A90D2005E6FE6 /* .gitignore in Resources */,
+				4C28C339218D3D0A00542A3B /* Podfile in Resources */,
 				4C7DC4FF2186A13400F72BDC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +219,52 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		13CCAB1DA31E30C2866294BA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Toronto311-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		30E0A389376B7E9116A6522C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GEOSwift/GEOSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/geos/geos.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GEOSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/geos.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4C4F809C21893C0000EBD4DE /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -397,13 +465,14 @@
 		};
 		4C7DC5092186A13500F72BDC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 938412E85F8F9B59B673DF17 /* Pods-Toronto311.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BK55QC3VGH;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Toronto311/Frameworks",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = Toronto311/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -419,13 +488,14 @@
 		};
 		4C7DC50A2186A13500F72BDC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9B3A5801A3E242C550F66F6 /* Pods-Toronto311.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BK55QC3VGH;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Toronto311/Frameworks",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = Toronto311/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -8,7 +8,7 @@
 
 import UIKit
 import MapKit
-import SWXMLHash
+import GEOSwift
 
 class ViewController: UIViewController {
     let map = MKMapView()
@@ -30,9 +30,14 @@ class ViewController: UIViewController {
         
         centerMapOnLocation(location: .toronto)
         
-        DataImporter.processFirestations {print($0)}
-        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
-        DataImporter.processServiceList(.disk) {print($0)}
+        DataImporter.procesGeo { geometry in
+            if let overlay = geometry.boundary()?.mapShape() as? MKOverlay {
+                self.map.addOverlay(overlay)
+            }
+        }
+//        DataImporter.processFirestations {print($0)}
+//        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
+//        DataImporter.processServiceList(.disk) {print($0)}
     }
     
     func centerMapOnLocation(location: CLLocation) {
@@ -48,11 +53,28 @@ class ViewController: UIViewController {
 
 extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        return point(mapView, viewFor: annotation)
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        var renderer: MKOverlayRenderer?
+        
+        if let overlay = overlay as? MKPolyline {
+            let r = MKPolylineRenderer(polyline: overlay)
+            r.strokeColor = .blue
+            r.lineWidth = 1
+            renderer = r
+        }
+        
+        return renderer ?? MKOverlayRenderer()
+    }
+    
+    func point(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "Annotation"
-
+        
         let view =
             mapView.dequeueReusableAnnotationView(withIdentifier: identifier) ??
-            MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
         
         if let view = view as? MKPinAnnotationView {
             view.canShowCallout = true

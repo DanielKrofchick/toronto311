@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GEOSwift
 
 struct DataImporter {
     enum Source {
@@ -18,7 +19,7 @@ struct DataImporter {
         guard let asset = NSDataAsset(name: name) else {
             fatalError("missing data asset: \(name)")
         }
-
+        
         var result = [T]()
         
         if let string = String(data: asset.data, encoding: String.Encoding.utf8) {
@@ -39,6 +40,30 @@ struct DataImporter {
         }
         
         return asset.data
+    }
+}
+
+extension DataImporter {
+    static func procesGeo(_ forEach: @escaping (Geometry) -> ()) {
+        DispatchQueue.global(qos: .background).async {
+            let data = DataImporter.importJSON("WARD_WGS84")
+            self.processGeo(data, forEach: forEach)
+        }
+    }
+    
+    static private func processGeo(_ data: Data, forEach: @escaping (Geometry) -> ()) {
+        do {
+            if let json = try Features.fromGeoJSON(data) {
+                json.forEach { (feature) in
+                    print(feature.id ?? "", feature.properties ?? "")
+                    feature.geometries?.forEach({ (geometry) in
+                        forEach(geometry)
+                    })
+                }
+            }
+        } catch {
+            print(error)
+        }
     }
 }
 

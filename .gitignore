@@ -3,7 +3,7 @@
 
 # Xcode
 xcuserdata
-xcshareddata
 
 # Carthage
 Carthage
+Pods
