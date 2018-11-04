@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum ServiceCodes: String {
+enum ServiceCodes: String, Codable {
     case CSROWBM03 = "CSROWBM-03"
     case CSROWC05 = "CSROWC-05"
     case CSROSC14 = "CSROSC-14"
@@ -26,7 +26,4 @@ enum ServiceCodes: String {
         case .SWLMALB02: return .cyan
         }
     }
-}
-
-extension ServiceCodes: Codable {
 }

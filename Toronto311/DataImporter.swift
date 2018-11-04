@@ -44,20 +44,20 @@ struct DataImporter {
 }
 
 extension DataImporter {
-    static func procesGeo(_ forEach: @escaping (Geometry) -> ()) {
+    static func procesGeo(_ forEach: @escaping (Feature, Geometry) -> ()) {
         DispatchQueue.global(qos: .background).async {
             let data = DataImporter.importJSON("WARD_WGS84")
             self.processGeo(data, forEach: forEach)
         }
     }
     
-    static private func processGeo(_ data: Data, forEach: @escaping (Geometry) -> ()) {
+    static private func processGeo(_ data: Data, forEach: @escaping (Feature, Geometry) -> ()) {
         do {
             if let json = try Features.fromGeoJSON(data) {
                 json.forEach { (feature) in
                     print(feature.id ?? "", feature.properties ?? "")
                     feature.geometries?.forEach({ (geometry) in
-                        forEach(geometry)
+                        forEach(feature, geometry)
                     })
                 }
             }
