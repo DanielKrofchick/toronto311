@@ -55,7 +55,6 @@ extension DataImporter {
         do {
             if let json = try Features.fromGeoJSON(data) {
                 json.forEach { (feature) in
-                    print(feature.id ?? "", feature.properties ?? "")
                     feature.geometries?.forEach({ (geometry) in
                         forEach(feature, geometry)
                     })

@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-struct Ward: Codable {
+class Ward: NSObject, Codable {
     var areaID: Int
     var areaName: String
     var areaLCD: String
@@ -35,10 +35,16 @@ struct Ward: Codable {
 
 class WardPolygon: MKPolygon {
     var ward: Ward?
+    var isSelected = false
+}
+
+class WardPolyline: MKPolyline {
+    var ward: Ward?
+    var isSelected = false
 }
 
 extension MKPolygon {
-    func toWardPolygon(_ ward: Ward) -> WardPolygon {
+    func wardPolygon(_ ward: Ward) -> WardPolygon {
         let result = WardPolygon(points: points(), count: pointCount, interiorPolygons: interiorPolygons)
         result.ward = ward
         return result
@@ -46,7 +52,42 @@ extension MKPolygon {
 }
 
 extension MKPolyline {
-    func toWardPolygon(_ ward: Ward) -> WardPolygon {
-        return toPolygon().toWardPolygon(ward)
+    func wardPolyline(_ ward: Ward) -> WardPolyline {
+        let result = WardPolyline(points: points(), count: pointCount)
+        result.ward = ward
+        return result
+    }
+}
+
+extension Ward {
+    override var description: String {
+        return
+          """
+          Ward(
+            areaID: \(areaID),
+            areaName: \(areaName)
+            areaLCD: \(areaLCD)
+            areaSCD: \(areaSCD)
+            areaType: \(areaType)
+            latitude: \(latitude)
+            longitude: \(longitude)
+            x: \(x)
+            y: \(y)
+          )
+          """
+    }
+}
+
+extension Ward: MKAnnotation {
+    public var coordinate: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    public var title: String? {
+        return areaName
+    }
+    
+    public var subtitle: String? {
+        return String(describing: areaID)
     }
 }

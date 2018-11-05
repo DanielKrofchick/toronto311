@@ -11,6 +11,7 @@ import MapKit
 import GEOSwift
 
 class ViewController: UIViewController {
+    let info = UIView()
     let map = MKMapView()
     var mapTap = UITapGestureRecognizer()
 
@@ -19,6 +20,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        info.backgroundColor = UIColor.red
         
         map.frame = view.bounds
         map.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -33,38 +36,14 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
         
         centerMapOnLocation(location: .toronto)
+        loadData()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        DataImporter.procesGeo { feature, geometry in
-            var ward: Ward?
-            
-            if let dic = feature.properties {
-                do {
-                    let jsonData = try JSONSerialization.data(withJSONObject: dic, options: .prettyPrinted)
-                    let string = String(data: jsonData, encoding: String.Encoding.utf8)
-                    if let data = string?.data(using: String.Encoding.utf8) {
-                        ward = try JSONDecoder().decode(Ward.self, from: data)
-                    }
-                } catch {
-                    print(error)
-                }
-            }
-            
-            print(ward ?? "")
-            
-            if let overlay = geometry.boundary()?.mapShape() as? MKOverlay {
-                if
-                    let overlay = overlay as? MKPolyline,
-                    let ward = ward
-                {
-                    self.map.addOverlay(overlay.toWardPolygon(ward))
-                } else {
-                    self.map.addOverlay(overlay)
-                }
-            }
-        }
-//        DataImporter.processFirestations {print($0)}
-//        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
-//        DataImporter.processServiceList(.disk) {print($0)}
+        info.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        info.center = view.center
     }
     
     func centerMapOnLocation(location: CLLocation) {
@@ -78,31 +57,29 @@ class ViewController: UIViewController {
     }
 }
 
+extension ViewController {
+    func loadData() {
+        DataImporter.procesGeo { feature, geometry in
+            if
+                let overlay = geometry.boundary()?.mapShape() as? MKPolyline,
+                let w: Ward? = (feature.properties as? [String: Any])?.decodeDecodable(),
+                let ward = w
+            {
+                DispatchQueue.main.async {
+//                    self.map.addOverlay(overlay.wardPolyline(ward))
+                    self.map.addOverlay(overlay.polygon().wardPolygon(ward))
+                    self.map.addAnnotation(ward)
+                }
+            }
+        }
+//        DataImporter.processFirestations {print($0)}
+//        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
+//        DataImporter.processServiceList(.disk) {print($0)}
+    }
+}
+
 extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        return point(mapView, viewFor: annotation)
-    }
-    
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        var renderer: MKOverlayRenderer?
-        
-        if let overlay = overlay as? MKPolyline {
-            let r = MKPolylineRenderer(polyline: overlay)
-            r.strokeColor = .blue
-            r.lineWidth = 1
-            renderer = r
-        } else if let overlay = overlay as? MKPolygon {
-            let r = MKPolygonRenderer(polygon: overlay)
-            r.strokeColor = .blue
-            r.lineWidth = 1.5
-            r.fillColor = UIColor.yellow.withAlphaComponent(0.1)
-            renderer = r
-        }
-        
-        return renderer ?? MKOverlayRenderer()
-    }
-    
-    func point(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "Annotation"
         
         let view =
@@ -120,99 +97,96 @@ extension ViewController: MKMapViewDelegate {
         
         return view
     }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        var renderer: MKOverlayRenderer?
+        
+        if let overlay = overlay as? MKPolyline {
+            let r = MKPolylineRenderer(polyline: overlay)
+            r.strokeColor = .blue
+            r.lineWidth = 1.5
+
+            if let overlay = overlay as? WardPolyline {
+                r.strokeColor = overlay.isSelected ? .red : .blue
+            }
+
+            renderer = r
+        } else if let overlay = overlay as? MKPolygon {
+            let r = MKPolygonRenderer(polygon: overlay)
+            r.strokeColor = .green
+            r.lineWidth = 1.5
+            r.fillColor = UIColor.yellow.withAlphaComponent(0.1)
+            
+            if let overlay = overlay as? WardPolygon {
+                r.fillColor = overlay.isSelected ? UIColor.blue.withAlphaComponent(0.1) : UIColor.yellow.withAlphaComponent(0.1)
+            }
+            
+            renderer = r
+        }
+        
+        return renderer ?? MKOverlayRenderer()
+    }
 }
 
-// https://stackoverflow.com/questions/11713788/how-to-detect-taps-on-mkpolylines-overlays-like-maps-app
 extension ViewController {
     @objc func mapTapped(_ tap: UITapGestureRecognizer) {
         inside(tap)
-//        nearest(tap)
+        nearest(tap)
     }
 
     private func inside(_ tap: UITapGestureRecognizer) {
-        if tap.state == .recognized {
-            let touchPt: CGPoint = tap.location(in: map)
-            let coord: CLLocationCoordinate2D = map.convert(touchPt, toCoordinateFrom: map)
-            var intersectPoly: MKPolygon?
-
-            for overlay in map.overlays {
-                if let overlay = overlay as? MKPolygon {
-                    let renderer = MKPolygonRenderer(polygon: overlay)
-                    if renderer.path.contains(renderer.point(for: MKMapPoint(coord))) {
-                        intersectPoly = overlay
-                        break
-                    }
-                }
-            }
-            
-            if
-                let intersectPoly = intersectPoly as? WardPolygon,
-                let ward = intersectPoly.ward
-            {
-                print("Poly: \(ward.areaName)")
-            }
+        if
+            tap.state == .recognized,
+            let polygon = map.polygon(for: tap.location(in: map)) as? WardPolygon,
+            let ward = polygon.ward
+        {
+            print(ward)
+            select(polygon)
+            info(selected()?.ward)
         }
     }
 
     private func nearest(_ tap: UITapGestureRecognizer) {
-        if tap.state == .recognized {
-            // Get map coordinate from touch point
-            let touchPt: CGPoint = tap.location(in: map)
-            let coord: CLLocationCoordinate2D = map.convert(touchPt, toCoordinateFrom: map)
-            let maxMeters: Double = meters(fromPixel: 22, at: touchPt)
-            var nearestDistance: Float = MAXFLOAT
-            var nearestPoly: MKPolyline?
-            // for every overlay ...
-            for overlay: MKOverlay in map.overlays {
-                // .. if MKPolyline ...
-                if let overlay = overlay as? MKPolyline {
-                    // ... get the distance ...
-                    let distance: Float = Float(distanceOf(pt: MKMapPoint(coord), toPoly: overlay))
-                    // ... and find the nearest one
-                    if distance < nearestDistance {
-                        nearestDistance = distance
-                        nearestPoly = overlay
-                    }
-                }
-            }
-            
-            if Double(nearestDistance) <= maxMeters {
-                print("Touched poly: \(String(describing: nearestPoly)) distance: \(nearestDistance)")
-                
+        if
+            tap.state == .recognized,
+            let polyline = map.polyline(for: tap.location(in: map)) as? WardPolyline,
+            let ward = polyline.ward
+        {
+            print("Polyline: \(ward.areaName)")
+            polyline.isSelected.toggle()
+            map.removeOverlay(polyline)
+            map.addOverlay(polyline)
+        }
+    }
+    
+    private func select(_ polygon: MKPolygon) {
+        map.overlays.forEach { overlay in
+            guard let overlay = overlay as? WardPolygon else {return}
+            let v = overlay == polygon
+            if v {
+                overlay.isSelected.toggle()
+                map.removeOverlay(overlay)
+                map.addOverlay(overlay)
+            } else if overlay.isSelected != v {
+                overlay.isSelected = v
+                map.removeOverlay(overlay)
+                map.addOverlay(overlay)
             }
         }
     }
     
-    func distanceOf(pt: MKMapPoint, toPoly poly: MKPolyline) -> Double {
-        var distance: Double = Double(MAXFLOAT)
-        for n in 0..<poly.pointCount - 1 {
-            let ptA = poly.points()[n]
-            let ptB = poly.points()[n + 1]
-            let xDelta: Double = ptB.x - ptA.x
-            let yDelta: Double = ptB.y - ptA.y
-            if xDelta == 0.0 && yDelta == 0.0 {
-                // Points must not be equal
-                continue
-            }
-            let u: Double = ((pt.x - ptA.x) * xDelta + (pt.y - ptA.y) * yDelta) / (xDelta * xDelta + yDelta * yDelta)
-            var ptClosest: MKMapPoint
-            if u < 0.0 {
-                ptClosest = ptA
-            } else if u > 1.0 {
-                ptClosest = ptB
-            } else {
-                ptClosest = MKMapPoint(x: ptA.x + u * xDelta, y: ptA.y + u * yDelta)
-            }
-            
-            distance = min(distance, ptClosest.distance(to: pt))
-        }
-        return distance
+    private func selected() -> WardPolygon? {
+        return map.overlays.first { (overlay) -> Bool in
+            return (overlay as? WardPolygon)?.isSelected ?? false
+        } as? WardPolygon
     }
     
-    func meters(fromPixel px: Int, at pt: CGPoint) -> Double {
-        let ptB = CGPoint(x: pt.x + CGFloat(px), y: pt.y)
-        let coordA: CLLocationCoordinate2D = map.convert(pt, toCoordinateFrom: map)
-        let coordB: CLLocationCoordinate2D = map.convert(ptB, toCoordinateFrom: map)
-        return MKMapPoint(coordA).distance(to: MKMapPoint(coordB))
+    private func info(_ ward: Ward?) {
+//        if let ward = ward {
+//            view.addSubview(info)
+//            view.setNeedsLayout()
+//        } else {
+//            info.removeFromSuperview()
+//        }
     }
 }

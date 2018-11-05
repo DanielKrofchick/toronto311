@@ -9,7 +9,7 @@
 import MapKit
 
 extension MKPolyline {
-    func toPolygon() -> MKPolygon {
+    func polygon() -> MKPolygon {
         return MKPolygon(points: points(), count: pointCount)
     }
 }

@@ -21,4 +21,20 @@ extension Dictionary {
         
         return result
     }
+    
+    func decodeDecodable<T: Decodable>() -> T? {
+        var result: T?
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+            let string = String(data: jsonData, encoding: String.Encoding.utf8)
+            if let data = string?.data(using: String.Encoding.utf8) {
+                result = try JSONDecoder().decode(T.self, from: data)
+            }
+        } catch {
+            print(error)
+        }
+        
+        return result
+    }
 }
