@@ -7,12 +7,24 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-
+    var dataController = DataController()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        dataController.load { [weak self] in
+            print("data-loaded")
+            self?.dataStuff()
+        }
+        
         return true
+    }
+    
+    func dataStuff() {
+        dataController.decode()
     }
 }

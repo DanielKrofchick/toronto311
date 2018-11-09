@@ -22,14 +22,18 @@ extension Dictionary {
         return result
     }
     
-    func decodeDecodable<T: Decodable>() -> T? {
+    func decodeDecodable<T: Decodable>(userInfo: [CodingUserInfoKey: Any]? = nil) -> T? {
         var result: T?
         
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
             let string = String(data: jsonData, encoding: String.Encoding.utf8)
             if let data = string?.data(using: String.Encoding.utf8) {
-                result = try JSONDecoder().decode(T.self, from: data)
+                let decoder = JSONDecoder()
+                userInfo?.forEach {
+                    decoder.userInfo[$0.key] = $0.value
+                }
+                result = try decoder.decode(T.self, from: data)
             }
         } catch {
             print(error)

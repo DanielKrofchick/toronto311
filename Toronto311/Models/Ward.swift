@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class Ward: NSObject, Codable {
     var areaID: Int
