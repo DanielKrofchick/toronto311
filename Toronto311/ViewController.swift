@@ -36,7 +36,6 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
         
         centerMapOnLocation(location: .toronto)
-        loadData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -59,12 +58,16 @@ class ViewController: UIViewController {
 
 extension ViewController {
     func loadData() {
+        guard let dataController = (UIApplication.shared.delegate as? AppDelegate)?.dataController else {return}
+        
         DataImporter.procesGeo { feature, geometry in
             if
                 let overlay = geometry.boundary()?.mapShape() as? MKPolyline,
-                let w: Ward? = (feature.properties as? [String: Any])?.decodeDecodable(),
+                let w: Ward? = (feature.properties as? [String: Any])?.decodeDecodable(userInfo: [.context: dataController.context]),
                 let ward = w
             {
+                dataController.save()
+                let gotWards = dataController.read(areaID: ward.areaID)
                 DispatchQueue.main.async {
 //                    self.map.addOverlay(overlay.wardPolyline(ward))
                     self.map.addOverlay(overlay.polygon().wardPolygon(ward))

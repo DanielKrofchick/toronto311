@@ -26,5 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func dataStuff() {
         dataController.decode()
+        
+        if let viewController = window?.rootViewController as? ViewController {
+            viewController.loadData()
+        }
     }
 }

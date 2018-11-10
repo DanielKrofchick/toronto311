@@ -25,30 +25,23 @@ class DataController: NSObject {
         }
     }
     
-    func read() {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: EntityName.user.rawValue)
-        //        request.predicate = NSPredicate(format: "location = %@", "123")
+    func read(areaID: Int32) -> [Ward] {
+        let request = NSFetchRequest<Ward>(entityName: NSEntityDescriptionName.ward)
+//        request.predicate = NSPredicate(format: "areaID = %@", areaID)
         request.returnsObjectsAsFaults = false
         
         do {
-            if
-                let result = try context.fetch(request) as? [UserCD],
-                result.count > 0
-            {
-                for data in result {
-                    print(data.name ?? "")
-                }
-            } else {
-                print("request returned no data (\(request))")
-            }
+            return try context.fetch(request)
         } catch {
             print("failed to fetch request (\(request)) from context (\(context))")
         }
+        
+        return []
     }
     
     func write() {
         if
-            let entity = NSEntityDescription.entity(forEntityName: EntityName.user.rawValue, in: context),
+            let entity = NSEntityDescription.entity(forEntityName: NSEntityDescriptionName.user, in: context),
             let object = NSManagedObject(entity: entity, insertInto: context) as? UserCD
         {
             object.name = "this is my name"
@@ -84,8 +77,8 @@ class DataController: NSObject {
     }
 }
 
-enum EntityName: String {
-    case user = "UserCD"
+struct NSEntityDescriptionName {
+    static var user: String {return "UserCD"}
 }
 
 public extension CodingUserInfoKey {
@@ -100,8 +93,8 @@ class User: UserCD, Codable {
     required convenience init(from decoder: Decoder) throws {
         guard
             let context = decoder.userInfo[.context] as? NSManagedObjectContext,
-            let entity = NSEntityDescription.entity(forEntityName: EntityName.user.rawValue, in: context)
-            else {fatalError("Failed to decode \(EntityName.user.rawValue)")}
+            let entity = NSEntityDescription.entity(forEntityName: NSEntityDescriptionName.user, in: context)
+            else {fatalError("Failed to decode \(NSEntityDescriptionName.user)")}
         
         self.init(entity: entity, insertInto: nil)
 
