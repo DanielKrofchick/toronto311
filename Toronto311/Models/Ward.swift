@@ -9,22 +9,13 @@
 import UIKit
 import MapKit
 import CoreData
+import GEOSwift
 
 extension NSEntityDescriptionName {
     static var ward: String {return "Ward"}
 }
 
 class Ward: NSManagedObject, Codable {
-//    @NSManaged var areaID: Int32
-//    @NSManaged var areaName: String
-//    @NSManaged var areaLCD: String
-//    @NSManaged var areaSCD: String
-//    @NSManaged var areaType: String
-//    @NSManaged var latitude: Double
-//    @NSManaged var longitude: Double
-//    @NSManaged var x: Double
-//    @NSManaged var y: Double
-    
     enum CodingKeys: String, CodingKey {
         case areaID = "AREA_ID"
         case areaName = "AREA_NAME"
@@ -35,6 +26,7 @@ class Ward: NSManagedObject, Codable {
         case longitude = "LONGITUDE"
         case x = "X"
         case y = "Y"
+        case geoJSON
     }
     
     required convenience init(from decoder: Decoder) throws {
@@ -55,6 +47,7 @@ class Ward: NSManagedObject, Codable {
         longitude = try values.decode(Double.self, forKey: .longitude)
         x = try values.decode(Double.self, forKey: .x)
         y = try values.decode(Double.self, forKey: .y)
+        geoJSON = try values.decodeIfPresent(Data.self, forKey: .geoJSON)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -68,7 +61,26 @@ class Ward: NSManagedObject, Codable {
         try container.encode(longitude, forKey: .longitude)
         try container.encode(x, forKey: .x)
         try container.encode(y, forKey: .y)
+        try container.encodeIfPresent(geoJSON, forKey: .geoJSON)
 
+    }
+}
+
+extension Ward {
+    override var description: String {
+        return """
+                Ward(
+                  areaID: \(areaID),
+                  areaName: \(areaName ?? "")
+                  areaLCD: \(areaLCD ?? "")
+                  areaSCD: \(areaSCD ?? "")
+                  areaType: \(areaType ?? "")
+                  latitude: \(latitude)
+                  longitude: \(longitude)
+                  x: \(x)
+                  y: \(y)
+                )
+                """
     }
 }
 
@@ -98,25 +110,6 @@ extension MKPolyline {
     }
 }
 
-extension Ward {
-    override var description: String {
-        return
-          """
-          Ward(
-            areaID: \(areaID),
-            areaName: \(areaName ?? "")
-            areaLCD: \(areaLCD ?? "")
-            areaSCD: \(areaSCD ?? "")
-            areaType: \(areaType ?? "")
-            latitude: \(latitude)
-            longitude: \(longitude)
-            x: \(x)
-            y: \(y)
-          )
-          """
-    }
-}
-
 extension Ward: MKAnnotation {
     public var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -128,5 +121,39 @@ extension Ward: MKAnnotation {
     
     public var subtitle: String? {
         return String(describing: areaID)
+    }
+}
+
+extension Ward {
+    func features() -> [Feature] {
+        var result = [Feature]()
+        
+        if
+            let geoJSON = geoJSON,
+            let f = try? Features.fromGeoJSON(geoJSON),
+            let features = f
+        {
+            result = features
+        }
+        
+        return result
+    }
+}
+
+extension Ward {
+    static func all() -> [Ward] {
+        var result = [Ward]()
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: NSEntityDescriptionName.ward)
+        
+        do {
+            if let fetched = try DataController.shared.context.fetch(request) as? [Ward] {
+                result.append(contentsOf: fetched)
+            }
+        } catch {
+            fatalError("failed to fetch wards: \(error)")
+        }
+        
+        return result
     }
 }

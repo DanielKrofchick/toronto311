@@ -11,38 +11,40 @@ import MapKit
 import GEOSwift
 
 class ViewController: UIViewController {
-    let info = UIView()
     let map = MKMapView()
     var mapTap = UITapGestureRecognizer()
+    let tableView = UITableView(frame: .zero, style: .plain)
+    let wardViewModel = WardViewModel()
 
     private let centerOffset: CLLocationDegrees = 0.08
     private let regionRadius: CLLocationDistance = 20000
+    private let reuseIdentifier = "reuseIdentifier"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        info.backgroundColor = UIColor.red
-        
-        map.frame = view.bounds
-        map.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         map.delegate = self
         view.addSubview(map)
         
         mapTap = UITapGestureRecognizer(target: self, action: #selector(mapTapped(_:)))
         map.addGestureRecognizer(mapTap)
+        
+        if DataController.shared.isLoaded {
+            loadData()
+        } else {
+            NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .coreDataDidLoad, object: nil)
+        }
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        view.addSubview(tableView)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         centerMapOnLocation(location: .toronto)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        info.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        info.center = view.center
     }
     
     func centerMapOnLocation(location: CLLocation) {
@@ -54,27 +56,51 @@ class ViewController: UIViewController {
                                                   longitudinalMeters: regionRadius)
         map.setRegion(coordinateRegion, animated: true)
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let f = CGFloat(0.6)
+        
+        map.frame = CGRect(x: 0, y: 0, width: view.frame.width * f, height: view.frame.height)
+        tableView.frame = CGRect(x: view.frame.width * f, y: 0, width: view.frame.width * (1.0 - f), height: view.frame.height)
+    }
 }
 
 extension ViewController {
-    func loadData() {
-        guard let dataController = (UIApplication.shared.delegate as? AppDelegate)?.dataController else {return}
-        
-        DataImporter.procesGeo { feature, geometry in
+    @objc func loadData() {
+        DataController.shared.deleteAll()
+        DataImporter.procesGeo(forEach: { (ward) in
             if
-                let overlay = geometry.boundary()?.mapShape() as? MKPolyline,
-                let w: Ward? = (feature.properties as? [String: Any])?.decodeDecodable(userInfo: [.context: dataController.context]),
-                let ward = w
+                let geometry = ward.features().first?.geometries?.first,
+                let overlay = geometry.boundary()?.mapShape() as? MKPolyline
             {
-                dataController.save()
-                let gotWards = dataController.read(areaID: ward.areaID)
                 DispatchQueue.main.async {
 //                    self.map.addOverlay(overlay.wardPolyline(ward))
                     self.map.addOverlay(overlay.polygon().wardPolygon(ward))
-                    self.map.addAnnotation(ward)
+//                    self.map.addAnnotation(ward)
                 }
             }
-        }
+        }, completion: {
+            DispatchQueue.main.async {
+                [weak self] in
+                self?.wardViewModel.wards = Ward.all()
+                self?.tableView.reloadData()
+                print("completed loading wards")
+            }
+        })
+//        DataImporter.procesGeo { ward in
+//            if
+//                let geometry = ward.features().first?.geometries?.first,
+//                let overlay = geometry.boundary()?.mapShape() as? MKPolyline
+//            {
+//                DispatchQueue.main.async {
+////                    self.map.addOverlay(overlay.wardPolyline(ward))
+//                    self.map.addOverlay(overlay.polygon().wardPolygon(ward))
+////                    self.map.addAnnotation(ward)
+//                }
+//            }
+//        }
 //        DataImporter.processFirestations {print($0)}
 //        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
 //        DataImporter.processServiceList(.disk) {print($0)}
@@ -155,7 +181,7 @@ extension ViewController {
             let polyline = map.polyline(for: tap.location(in: map)) as? WardPolyline,
             let ward = polyline.ward
         {
-            print("Polyline: \(ward.areaName)")
+            print("Polyline: \(ward.areaName ?? "")")
             polyline.isSelected.toggle()
             map.removeOverlay(polyline)
             map.addOverlay(polyline)
@@ -185,11 +211,26 @@ extension ViewController {
     }
     
     private func info(_ ward: Ward?) {
-//        if let ward = ward {
-//            view.addSubview(info)
-//            view.setNeedsLayout()
-//        } else {
-//            info.removeFromSuperview()
-//        }
+        print(ward ?? "")
+    }
+}
+
+extension ViewController: UITableViewDelegate {
+}
+
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return wardViewModel.wards.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+
+        if let ward = wardViewModel.wards[safe: indexPath.row] {
+            cell.textLabel?.text = ward.areaName
+            cell.textLabel?.font = UIFont.systemFont(ofSize: 10)
+        }
+        
+        return cell
     }
 }

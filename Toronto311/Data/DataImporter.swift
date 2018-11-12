@@ -44,24 +44,37 @@ struct DataImporter {
 }
 
 extension DataImporter {
-    static func procesGeo(_ forEach: @escaping (Feature, Geometry) -> ()) {
+    static func procesGeo(forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
         DispatchQueue.global(qos: .background).async {
             let data = DataImporter.importJSON("WARD_WGS84")
-            self.processGeo(data, forEach: forEach)
+            self.processGeo(data, forEach: forEach, completion: completion)
         }
     }
     
-    static private func processGeo(_ data: Data, forEach: @escaping (Feature, Geometry) -> ()) {
+    static private func processGeo(_ data: Data, forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
         do {
-            if let json = try Features.fromGeoJSON(data) {
-                json.forEach { (feature) in
-                    feature.geometries?.forEach({ (geometry) in
-                        forEach(feature, geometry)
-                    })
+            if
+                let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                let type = dictionary["type"] as? String,
+                type == "FeatureCollection",
+                let features = dictionary["features"] as? [[String: AnyObject]]
+            {
+                features.forEach { (featureDictionary) in
+                    if
+                        let properties = featureDictionary["properties"] as? [String: AnyObject],
+                        let w: Ward? = properties.decodeDecodable(userInfo: [.context: DataController.shared.context]),
+                        let ward = w
+                    {
+                        ward.geoJSON = try? JSONSerialization.data(withJSONObject: featureDictionary, options: [])
+                        DataController.shared.save()
+                        forEach?(ward)
+                    }
                 }
+                completion?()
             }
         } catch {
             print(error)
+            completion?()
         }
     }
 }

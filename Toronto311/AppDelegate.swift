@@ -8,27 +8,19 @@
 
 import UIKit
 import CoreData
+import os.log
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var dataController = DataController()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        dataController.load { [weak self] in
-            print("data-loaded")
-            self?.dataStuff()
+        DataController.shared.load {
+            os_log("data-loaded", log: .app, type: .info)
         }
-        
+
+        os_log("documents-directory: %@", log: .app, type: .info, NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+
         return true
-    }
-    
-    func dataStuff() {
-        dataController.decode()
-        
-        if let viewController = window?.rootViewController as? ViewController {
-            viewController.loadData()
-        }
     }
 }
