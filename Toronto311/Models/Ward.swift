@@ -15,6 +15,11 @@ extension NSEntityDescriptionName {
     static var ward: String {return "Ward"}
 }
 
+enum WardSource: String {
+    case WARD_WGS84
+    case icitw_wgs84
+}
+
 class Ward: NSManagedObject, Codable {
     enum CodingKeys: String, CodingKey {
         case areaID = "AREA_ID"
@@ -26,7 +31,10 @@ class Ward: NSManagedObject, Codable {
         case longitude = "LONGITUDE"
         case x = "X"
         case y = "Y"
+        case createID = "CREATE_ID"
+        case objID = "OBJECTID"
         case geoJSON
+        case source
     }
     
     required convenience init(from decoder: Decoder) throws {
@@ -38,16 +46,19 @@ class Ward: NSManagedObject, Codable {
         self.init(entity: entity, insertInto: context)
         
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        areaID = try values.decode(Int32.self, forKey: .areaID)
-        areaName = try values.decode(String.self, forKey: .areaName)
-        areaLCD = try values.decode(String.self, forKey: .areaLCD)
-        areaSCD = try values.decode(String.self, forKey: .areaSCD)
-        areaType = try values.decode(String.self, forKey: .areaType)
-        latitude = try values.decode(Double.self, forKey: .latitude)
-        longitude = try values.decode(Double.self, forKey: .longitude)
-        x = try values.decode(Double.self, forKey: .x)
-        y = try values.decode(Double.self, forKey: .y)
+        areaID = try values.decodeIfPresent(Int32.self, forKey: .areaID) ?? Int32.max
+        areaName = try values.decodeIfPresent(String.self, forKey: .areaName)
+        areaLCD = try values.decodeIfPresent(String.self, forKey: .areaLCD)
+        areaSCD = try values.decodeIfPresent(String.self, forKey: .areaSCD)
+        areaType = try values.decodeIfPresent(String.self, forKey: .areaType)
+        latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? Double.greatestFiniteMagnitude
+        longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? Double.greatestFiniteMagnitude
+        x = try values.decodeIfPresent(Double.self, forKey: .x) ?? Double.greatestFiniteMagnitude
+        y = try values.decodeIfPresent(Double.self, forKey: .y) ?? Double.greatestFiniteMagnitude
         geoJSON = try values.decodeIfPresent(Data.self, forKey: .geoJSON)
+        source = try values.decode(String.self, forKey: .source)
+        createID = try values.decodeIfPresent(Int32.self, forKey: .createID) ?? Int32.max
+        objID = try values.decodeIfPresent(Int32.self, forKey: .objID) ?? Int32.max
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -62,7 +73,7 @@ class Ward: NSManagedObject, Codable {
         try container.encode(x, forKey: .x)
         try container.encode(y, forKey: .y)
         try container.encodeIfPresent(geoJSON, forKey: .geoJSON)
-
+        try container.encode(source, forKey: .source)
     }
 }
 
@@ -81,6 +92,29 @@ extension Ward {
                   y: \(y)
                 )
                 """
+    }
+}
+
+extension Dictionary where Key == String, Value == Any {
+    func transform(for source: WardSource) -> [String: Any] {
+        var result = self
+
+        result[Ward.CodingKeys.source.rawValue] = source.rawValue
+        
+        switch source {
+        case .icitw_wgs84:
+            result[Ward.CodingKeys.areaID.rawValue] = self["GEO_ID"] as? Int32 ?? Int32.max
+            result[Ward.CodingKeys.areaName.rawValue] = self["NAME"] as? String ?? ""
+            result[Ward.CodingKeys.areaLCD.rawValue] = self["LCODE_NAME"] as? String ?? ""
+            result[Ward.CodingKeys.areaSCD.rawValue] = self["SCODE_NAME"] as? String ?? ""
+            result[Ward.CodingKeys.areaType.rawValue] = self["TYPE_DESC"] as? String ?? ""
+            result[Ward.CodingKeys.createID.rawValue] = self[Ward.CodingKeys.createID.rawValue] as? Int32 ?? Int32.max
+            result[Ward.CodingKeys.objID.rawValue] = self[Ward.CodingKeys.objID.rawValue] as? Int32 ?? Int32.max
+        case .WARD_WGS84:
+            break
+        }
+        
+        return result
     }
 }
 

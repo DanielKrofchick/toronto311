@@ -46,28 +46,35 @@ struct DataImporter {
 extension DataImporter {
     static func procesGeo(forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
         DispatchQueue.global(qos: .background).async {
-            let data = DataImporter.importJSON("WARD_WGS84")
-            self.processGeo(data, forEach: forEach, completion: completion)
+//            let source = WardSource.WARD_WGS84
+            let source = WardSource.icitw_wgs84
+            let data = DataImporter.importJSON(source.rawValue)
+            self.processGeo(data, source: source, forEach: forEach, completion: completion)
         }
     }
     
-    static private func processGeo(_ data: Data, forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
+    static private func processGeo(_ data: Data, source: WardSource, forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
         do {
             if
                 let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                 let type = dictionary["type"] as? String,
                 type == "FeatureCollection",
-                let features = dictionary["features"] as? [[String: AnyObject]]
+                let features = dictionary["features"] as? [[String: Any]]
             {
                 features.forEach { (featureDictionary) in
-                    if
-                        let properties = featureDictionary["properties"] as? [String: AnyObject],
-                        let w: Ward? = properties.decodeDecodable(userInfo: [.context: DataController.shared.context]),
-                        let ward = w
-                    {
-                        ward.geoJSON = try? JSONSerialization.data(withJSONObject: featureDictionary, options: [])
-                        DataController.shared.save()
-                        forEach?(ward)
+                    if var properties = featureDictionary["properties"] as? [String: Any] {
+                        properties = properties.transform(for: source)
+
+                        print(properties.json() ?? "")
+                        
+                        if
+                            let w: Ward? = properties.decodeDecodable(userInfo: [.context: DataController.shared.context]),
+                            let ward = w
+                        {
+                            ward.geoJSON = try? JSONSerialization.data(withJSONObject: featureDictionary, options: [])
+                            DataController.shared.save()
+                            forEach?(ward)
+                        }
                     }
                 }
                 completion?()
