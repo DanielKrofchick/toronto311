@@ -4,6 +4,7 @@ disabled_rules:
 - trailing_comma
 - line_length
 - void_return
+- opening_brace
 
 excluded:
 - Carthage

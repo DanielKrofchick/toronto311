@@ -70,40 +70,35 @@ class ViewController: UIViewController {
 extension ViewController {
     @objc func loadData() {
         DataController.shared.deleteAll()
-        DataImporter.procesGeo(forEach: { (ward) in
-            if
-                let geometry = ward.features().first?.geometries?.first,
-                let overlay = geometry.boundary()?.mapShape() as? MKPolyline
-            {
-                DispatchQueue.main.async {
-//                    self.map.addOverlay(overlay.wardPolyline(ward))
-                    self.map.addOverlay(overlay.polygon().wardPolygon(ward))
-//                    self.map.addAnnotation(ward)
-                }
-            }
-        }, completion: {
-            DispatchQueue.main.async {
-                [weak self] in
-                self?.wardViewModel.wards = Ward.all()
-                self?.tableView.reloadData()
-                print("completed loading wards")
-            }
-        })
-//        DataImporter.procesGeo { ward in
-//            if
-//                let geometry = ward.features().first?.geometries?.first,
-//                let overlay = geometry.boundary()?.mapShape() as? MKPolyline
-//            {
-//                DispatchQueue.main.async {
-////                    self.map.addOverlay(overlay.wardPolyline(ward))
-//                    self.map.addOverlay(overlay.polygon().wardPolygon(ward))
-////                    self.map.addAnnotation(ward)
-//                }
-//            }
-//        }
+        
+        DataImporter.processGeo(source: .WARD_WGS84, forEach: {self.process($0)}, completion: nil)
+        DataImporter.processGeo(source: .icitw_wgs84, forEach: {self.process($0)}, completion: {self.reloadView()})
 //        DataImporter.processFirestations {print($0)}
 //        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
 //        DataImporter.processServiceList(.disk) {print($0)}
+    }
+    
+    private func process(_ ward: Ward) {
+        if
+            let geometry = ward.features().first?.geometries?.first,
+            let overlay = geometry.boundary()?.mapShape() as? MKPolyline
+        {
+            DispatchQueue.main.async {
+                self.map.addOverlay(overlay.polygon().wardPolygon(ward))
+//                self.map.addOverlay(overlay.wardPolyline(ward))
+//                self.map.addAnnotation(ward)
+            }
+        }
+    }
+    
+    private func reloadView() {
+        DispatchQueue.main.async {
+            [weak self] in
+            self?.wardViewModel.wards = Ward.all()
+            self?.tableView.reloadData()
+            DataController.shared.save()
+            print("completed loading wards")
+        }
     }
 }
 
@@ -144,10 +139,18 @@ extension ViewController: MKMapViewDelegate {
             let r = MKPolygonRenderer(polygon: overlay)
             r.strokeColor = .green
             r.lineWidth = 1.5
-            r.fillColor = UIColor.yellow.withAlphaComponent(0.1)
+            r.fillColor = UIColor.clear
             
-            if let overlay = overlay as? WardPolygon {
-                r.fillColor = overlay.isSelected ? UIColor.blue.withAlphaComponent(0.1) : UIColor.yellow.withAlphaComponent(0.1)
+            if
+                let overlay = overlay as? WardPolygon,
+                let source = overlay.ward?.wardSource
+            {
+                switch source {
+                case .icitw_wgs84:
+                    r.fillColor = overlay.isSelected ? UIColor.red.withAlphaComponent(0.2) : UIColor.clear
+                case .WARD_WGS84:
+                    r.fillColor = overlay.isSelected ? UIColor.blue.withAlphaComponent(0.2) : UIColor.clear
+                }
             }
             
             renderer = r
@@ -169,9 +172,8 @@ extension ViewController {
             let polygon = map.polygon(for: tap.location(in: map)) as? WardPolygon,
             let ward = polygon.ward
         {
+            selectPolygon(polygon)
             print(ward)
-            select(polygon)
-            info(selected()?.ward)
         }
     }
 
@@ -181,14 +183,14 @@ extension ViewController {
             let polyline = map.polyline(for: tap.location(in: map)) as? WardPolyline,
             let ward = polyline.ward
         {
-            print("Polyline: \(ward.areaName ?? "")")
             polyline.isSelected.toggle()
             map.removeOverlay(polyline)
             map.addOverlay(polyline)
+            print(ward)
         }
     }
     
-    private func select(_ polygon: MKPolygon) {
+    func selectPolygon(_ polygon: MKPolygon) {
         map.overlays.forEach { overlay in
             guard let overlay = overlay as? WardPolygon else {return}
             let v = overlay == polygon
@@ -209,13 +211,17 @@ extension ViewController {
             return (overlay as? WardPolygon)?.isSelected ?? false
         } as? WardPolygon
     }
-    
-    private func info(_ ward: Ward?) {
-        print(ward ?? "")
-    }
 }
 
 extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if
+            let ward = wardViewModel.wards[safe: indexPath.row],
+            let polygon = map.overlays.first(where: {($0 as? WardPolygon)?.ward == ward}) as? MKPolygon
+        {
+            self.selectPolygon(polygon)
+        }
+    }
 }
 
 extension ViewController: UITableViewDataSource {

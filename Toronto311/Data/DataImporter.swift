@@ -44,10 +44,8 @@ struct DataImporter {
 }
 
 extension DataImporter {
-    static func procesGeo(forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
+    static func processGeo(source: WardSource, forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
         DispatchQueue.global(qos: .background).async {
-//            let source = WardSource.WARD_WGS84
-            let source = WardSource.icitw_wgs84
             let data = DataImporter.importJSON(source.rawValue)
             self.processGeo(data, source: source, forEach: forEach, completion: completion)
         }
@@ -72,7 +70,6 @@ extension DataImporter {
                             let ward = w
                         {
                             ward.geoJSON = try? JSONSerialization.data(withJSONObject: featureDictionary, options: [])
-                            DataController.shared.save()
                             forEach?(ward)
                         }
                     }

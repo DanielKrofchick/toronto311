@@ -21,6 +21,115 @@ enum WardSource: String {
 }
 
 class Ward: NSManagedObject, Codable {
+    var areaID: Int32? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Int32
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    @NSManaged var areaName: String?
+    @NSManaged var areaLCD: String?
+    @NSManaged var areaSCD: String?
+    @NSManaged var areaType: String?
+    var latitude: Double? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Double
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    var longitude: Double? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Double
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    var x: Double? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Double
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    var y: Double? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Double
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    var createID: Int32? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Int32
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    var objID: Int32? {
+        get {
+            willAccessValue(forKey: #function)
+            defer { didAccessValue(forKey: #function) }
+            return primitiveValue(forKey: #function) as? Int32
+        }
+        set {
+            willChangeValue(forKey: #function)
+            defer { didChangeValue(forKey: #function) }
+            guard let value = newValue else { setPrimitiveValue(nil, forKey: #function); return }
+            setPrimitiveValue(value, forKey: #function)
+        }
+    }
+    @NSManaged var geoJSON: Data?
+    @NSManaged var source: String?
+    
+    var wardSource: WardSource {
+        switch source {
+        case WardSource.WARD_WGS84.rawValue:
+            return WardSource.WARD_WGS84
+        case WardSource.icitw_wgs84.rawValue:
+            return WardSource.icitw_wgs84
+        default:
+            return WardSource.icitw_wgs84
+        }
+    }
+    
     enum CodingKeys: String, CodingKey {
         case areaID = "AREA_ID"
         case areaName = "AREA_NAME"
@@ -46,19 +155,19 @@ class Ward: NSManagedObject, Codable {
         self.init(entity: entity, insertInto: context)
         
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        areaID = try values.decodeIfPresent(Int32.self, forKey: .areaID) ?? Int32.max
+        areaID = try values.decodeIfPresent(Int32.self, forKey: .areaID)
         areaName = try values.decodeIfPresent(String.self, forKey: .areaName)
         areaLCD = try values.decodeIfPresent(String.self, forKey: .areaLCD)
         areaSCD = try values.decodeIfPresent(String.self, forKey: .areaSCD)
         areaType = try values.decodeIfPresent(String.self, forKey: .areaType)
-        latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? Double.greatestFiniteMagnitude
-        longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? Double.greatestFiniteMagnitude
-        x = try values.decodeIfPresent(Double.self, forKey: .x) ?? Double.greatestFiniteMagnitude
-        y = try values.decodeIfPresent(Double.self, forKey: .y) ?? Double.greatestFiniteMagnitude
+        latitude = try values.decodeIfPresent(Double.self, forKey: .latitude)
+        longitude = try values.decodeIfPresent(Double.self, forKey: .longitude)
+        x = try values.decodeIfPresent(Double.self, forKey: .x)
+        y = try values.decodeIfPresent(Double.self, forKey: .y)
         geoJSON = try values.decodeIfPresent(Data.self, forKey: .geoJSON)
         source = try values.decode(String.self, forKey: .source)
-        createID = try values.decodeIfPresent(Int32.self, forKey: .createID) ?? Int32.max
-        objID = try values.decodeIfPresent(Int32.self, forKey: .objID) ?? Int32.max
+        createID = try values.decodeIfPresent(Int32.self, forKey: .createID)
+        objID = try values.decodeIfPresent(Int32.self, forKey: .objID)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -81,15 +190,17 @@ extension Ward {
     override var description: String {
         return """
                 Ward(
-                  areaID: \(areaID),
+                  areaID: \(areaID == nil ? "nil" : String(describing: areaID!)),
                   areaName: \(areaName ?? "")
                   areaLCD: \(areaLCD ?? "")
                   areaSCD: \(areaSCD ?? "")
                   areaType: \(areaType ?? "")
-                  latitude: \(latitude)
-                  longitude: \(longitude)
-                  x: \(x)
-                  y: \(y)
+                  latitude: \(latitude == nil ? "nil" : String(describing: latitude!)),
+                  longitude: \(longitude == nil ? "nil" : String(describing: longitude!)),
+                  x: \(x == nil ? "nil" : String(describing: x!)),
+                  y: \(y == nil ? "nil" : String(describing: y!)),
+                  createID: \(createID == nil ? "nil" : String(describing: createID!)),
+                  objID: \(objID == nil ? "nil" : String(describing: objID!)),
                 )
                 """
     }
@@ -103,13 +214,13 @@ extension Dictionary where Key == String, Value == Any {
         
         switch source {
         case .icitw_wgs84:
-            result[Ward.CodingKeys.areaID.rawValue] = self["GEO_ID"] as? Int32 ?? Int32.max
-            result[Ward.CodingKeys.areaName.rawValue] = self["NAME"] as? String ?? ""
-            result[Ward.CodingKeys.areaLCD.rawValue] = self["LCODE_NAME"] as? String ?? ""
-            result[Ward.CodingKeys.areaSCD.rawValue] = self["SCODE_NAME"] as? String ?? ""
-            result[Ward.CodingKeys.areaType.rawValue] = self["TYPE_DESC"] as? String ?? ""
-            result[Ward.CodingKeys.createID.rawValue] = self[Ward.CodingKeys.createID.rawValue] as? Int32 ?? Int32.max
-            result[Ward.CodingKeys.objID.rawValue] = self[Ward.CodingKeys.objID.rawValue] as? Int32 ?? Int32.max
+            result[Ward.CodingKeys.areaID.rawValue] = self["GEO_ID"] as? Int32
+            result[Ward.CodingKeys.areaName.rawValue] = self["NAME"] as? String
+            result[Ward.CodingKeys.areaLCD.rawValue] = self["LCODE_NAME"] as? String
+            result[Ward.CodingKeys.areaSCD.rawValue] = self["SCODE_NAME"] as? String
+            result[Ward.CodingKeys.areaType.rawValue] = self["TYPE_DESC"] as? String
+            result[Ward.CodingKeys.createID.rawValue] = self[Ward.CodingKeys.createID.rawValue] as? Int32
+            result[Ward.CodingKeys.objID.rawValue] = self[Ward.CodingKeys.objID.rawValue] as? Int32
         case .WARD_WGS84:
             break
         }
@@ -146,7 +257,7 @@ extension MKPolyline {
 
 extension Ward: MKAnnotation {
     public var coordinate: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        return CLLocationCoordinate2D(latitude: latitude ?? 0, longitude: longitude ?? 0)
     }
     
     public var title: String? {
