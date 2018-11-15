@@ -10,11 +10,26 @@ import UIKit
 import MapKit
 import GEOSwift
 
+extension Optional {
+    func onThrow(_ errorExpression: @autoclosure () -> Error) throws -> Wrapped {
+        switch self {
+        case .some(let value):
+            return value
+        case .none:
+            throw errorExpression()
+        }
+    }
+}
+
+enum DataError: Error {
+    case bottomSheet
+}
+
 class ViewController: UIViewController {
-    let map = MKMapView()
-    var mapTap = UITapGestureRecognizer()
-    let tableView = UITableView(frame: .zero, style: .plain)
-    let wardViewModel = WardViewModel()
+    private let map = MKMapView()
+    private var mapTap = UITapGestureRecognizer()
+    private let wardViewModel = WardViewModel()
+    private var sheet: BottomSheet!
 
     private let centerOffset: CLLocationDegrees = 0.08
     private let regionRadius: CLLocationDistance = 20000
@@ -22,6 +37,12 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        do {
+            sheet = try (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BottomSheet") as? BottomSheet).onThrow(DataError.bottomSheet)
+        } catch {
+            fatalError("Unable to instantiate BottomSheet")
+        }
         
         map.delegate = self
         view.addSubview(map)
@@ -35,10 +56,16 @@ class ViewController: UIViewController {
             NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .coreDataDidLoad, object: nil)
         }
         
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        view.addSubview(tableView)
+        addAndConfigureChild(sheet)
+        sheet.tableView.delegate = self
+        sheet.tableView.dataSource = self
+        sheet.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        
+        initConstraints()
+    }
+    
+    private func sheetFrame(_ fraction: CGFloat) -> CGRect {
+        return CGRect(x: 0, y: view.frame.height * fraction, width: view.frame.width, height: view.frame.height * (1.0 - fraction))
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -46,7 +73,7 @@ class ViewController: UIViewController {
         
         centerMapOnLocation(location: .toronto)
     }
-    
+        
     func centerMapOnLocation(location: CLLocation) {
         var center = location.coordinate
         center.latitude += centerOffset
@@ -60,19 +87,19 @@ class ViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let f = CGFloat(0.6)
-        
-        map.frame = CGRect(x: 0, y: 0, width: view.frame.width * f, height: view.frame.height)
-        tableView.frame = CGRect(x: view.frame.width * f, y: 0, width: view.frame.width * (1.0 - f), height: view.frame.height)
+        map.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+    }
+    
+    private func initConstraints() {
+        map.pin()
     }
 }
 
 extension ViewController {
     @objc func loadData() {
         DataController.shared.deleteAll()
-        
-        DataImporter.processGeo(source: .WARD_WGS84, forEach: {self.process($0)}, completion: nil)
-        DataImporter.processGeo(source: .icitw_wgs84, forEach: {self.process($0)}, completion: {self.reloadView()})
+        DataImporter.processGeo(source: .WARD_WGS84, forEach: {self.process($0)}, completion: {self.finishProcessing()})
+        DataImporter.processGeo(source: .icitw_wgs84, forEach: {self.process($0)}, completion: {self.finishProcessing()})
 //        DataImporter.processFirestations {print($0)}
 //        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
 //        DataImporter.processServiceList(.disk) {print($0)}
@@ -84,22 +111,33 @@ extension ViewController {
             let overlay = geometry.boundary()?.mapShape() as? MKPolyline
         {
             DispatchQueue.main.async {
-                self.map.addOverlay(overlay.polygon().wardPolygon(ward))
-//                self.map.addOverlay(overlay.wardPolyline(ward))
-//                self.map.addAnnotation(ward)
+                [weak self] in
+                self?.map.addOverlay(overlay.polygon().wardPolygon(ward))
+//                self?.map.addOverlay(overlay.wardPolyline(ward))
+//                self?.map.addAnnotation(ward)
             }
         }
     }
     
-    private func reloadView() {
-        DispatchQueue.main.async {
-            [weak self] in
-            self?.wardViewModel.wards = Ward.all()
-            self?.tableView.reloadData()
+    private func finishProcessing() {
+        measure {
             DataController.shared.save()
-            print("completed loading wards")
+            wardViewModel.wards = Ward.all()
+            DispatchQueue.main.async {
+                [weak self] in
+                self?.sheet.tableView.reloadData()
+            }
         }
     }
+}
+
+@discardableResult
+func measure<A>(name: String = "", _ block: () -> A) -> A {
+    let startTime = CACurrentMediaTime()
+    let result = block()
+    let timeElapsed = CACurrentMediaTime() - startTime
+    print("Time: \(name) - \(timeElapsed)")
+    return result
 }
 
 extension ViewController: MKMapViewDelegate {
@@ -125,35 +163,10 @@ extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         var renderer: MKOverlayRenderer?
         
-        if let overlay = overlay as? MKPolyline {
-            let r = MKPolylineRenderer(polyline: overlay)
-            r.strokeColor = .blue
-            r.lineWidth = 1.5
-
-            if let overlay = overlay as? WardPolyline {
-                r.strokeColor = overlay.isSelected ? .red : .blue
-            }
-
-            renderer = r
-        } else if let overlay = overlay as? MKPolygon {
-            let r = MKPolygonRenderer(polygon: overlay)
-            r.strokeColor = .green
-            r.lineWidth = 1.5
-            r.fillColor = UIColor.clear
-            
-            if
-                let overlay = overlay as? WardPolygon,
-                let source = overlay.ward?.wardSource
-            {
-                switch source {
-                case .icitw_wgs84:
-                    r.fillColor = overlay.isSelected ? UIColor.red.withAlphaComponent(0.2) : UIColor.clear
-                case .WARD_WGS84:
-                    r.fillColor = overlay.isSelected ? UIColor.blue.withAlphaComponent(0.2) : UIColor.clear
-                }
-            }
-            
-            renderer = r
+        if let overlay = overlay as? WardPolyline {
+            renderer = overlay.overlayRenderer()
+        } else if let overlay = overlay as? WardPolygon {
+            renderer = overlay.overlayRenderer()
         }
         
         return renderer ?? MKOverlayRenderer()
@@ -222,6 +235,14 @@ extension ViewController: UITableViewDelegate {
             self.selectPolygon(polygon)
         }
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        sheet.scrollViewDidScroll(scrollView)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        sheet.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+    }
 }
 
 extension ViewController: UITableViewDataSource {
@@ -233,8 +254,9 @@ extension ViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
 
         if let ward = wardViewModel.wards[safe: indexPath.row] {
+            cell.backgroundColor = .clear
+            cell.textLabel?.font = .preferredFont(forTextStyle: .headline)
             cell.textLabel?.text = ward.areaName
-            cell.textLabel?.font = UIFont.systemFont(ofSize: 10)
         }
         
         return cell

@@ -45,7 +45,7 @@ struct DataImporter {
 
 extension DataImporter {
     static func processGeo(source: WardSource, forEach: ((Ward)->())? = nil, completion: (()->())? = nil) {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let data = DataImporter.importJSON(source.rawValue)
             self.processGeo(data, source: source, forEach: forEach, completion: completion)
         }
@@ -65,13 +65,15 @@ extension DataImporter {
 
                         print(properties.json() ?? "")
                         
-                        if
-                            let w: Ward? = properties.decodeDecodable(userInfo: [.context: DataController.shared.context]),
-                            let ward = w
-                        {
-                            ward.geoJSON = try? JSONSerialization.data(withJSONObject: featureDictionary, options: [])
-                            forEach?(ward)
-                        }
+                        DataController.shared.context.performAndWait({
+                            if
+                                let w: Ward? = properties.decodeDecodable(userInfo: [.context: DataController.shared.context]),
+                                let ward = w
+                            {
+                                ward.geoJSON = try? JSONSerialization.data(withJSONObject: featureDictionary, options: [])
+                                forEach?(ward)
+                            }
+                        })
                     }
                 }
                 completion?()
@@ -94,7 +96,7 @@ extension DataImporter {
     }
     
     static func processServiceRequestsDisk(_ forEach: @escaping (ServiceRequest) -> ()) {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let data = DataImporter.importJSON("ServiceRequests")
             self.processServiceRequests(data, forEach: forEach)
         }
@@ -135,7 +137,7 @@ extension DataImporter {
     }
     
     static func processServiceListDisk(_ forEach: @escaping (ServiceType) -> ()) {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let data = DataImporter.importJSON("ServiceList")
             self.processServiceList(data, forEach: forEach)
         }

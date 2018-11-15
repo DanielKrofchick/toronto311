@@ -45,10 +45,12 @@ class DataController: NSObject {
     }
     
     func save() {
-        do {
-            try context.save()
-        } catch {
-            print("failed to save context (\(context)): \(error)")
+        context.performAndWait {
+            do {
+                try context.save()
+            } catch {
+                print("failed to save context (\(context)): \(error)")
+            }
         }
     }
     

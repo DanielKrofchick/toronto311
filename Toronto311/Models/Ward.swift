@@ -229,32 +229,6 @@ extension Dictionary where Key == String, Value == Any {
     }
 }
 
-class WardPolygon: MKPolygon {
-    var ward: Ward?
-    var isSelected = false
-}
-
-class WardPolyline: MKPolyline {
-    var ward: Ward?
-    var isSelected = false
-}
-
-extension MKPolygon {
-    func wardPolygon(_ ward: Ward) -> WardPolygon {
-        let result = WardPolygon(points: points(), count: pointCount, interiorPolygons: interiorPolygons)
-        result.ward = ward
-        return result
-    }
-}
-
-extension MKPolyline {
-    func wardPolyline(_ ward: Ward) -> WardPolyline {
-        let result = WardPolyline(points: points(), count: pointCount)
-        result.ward = ward
-        return result
-    }
-}
-
 extension Ward: MKAnnotation {
     public var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude ?? 0, longitude: longitude ?? 0)
@@ -291,12 +265,14 @@ extension Ward {
         
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: NSEntityDescriptionName.ward)
         
-        do {
-            if let fetched = try DataController.shared.context.fetch(request) as? [Ward] {
-                result.append(contentsOf: fetched)
+        DataController.shared.context.performAndWait {
+            do {
+                if let fetched = try DataController.shared.context.fetch(request) as? [Ward] {
+                    result.append(contentsOf: fetched)
+                }
+            } catch {
+                fatalError("failed to fetch wards: \(error)")
             }
-        } catch {
-            fatalError("failed to fetch wards: \(error)")
         }
         
         return result
