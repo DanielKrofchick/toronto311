@@ -9,10 +9,13 @@
 import UIKit
 
 class BottomSheet: UIViewController {
-    @IBOutlet weak var dragStrip: UIView!
     @IBOutlet weak var tableView: UITableView!
     
-    fileprivate var minVelocity: CGFloat = 0.05
+    // We aren't able to reset the scrollview pan gesture translation,
+    // as that appears to interfere with it's internal implementation.
+    // Tracking old gesture translation to calculate delta.
+    fileprivate var oldTranslation: CGFloat = 0
+    fileprivate var minVelocity: CGFloat = 0.5
     fileprivate var defaultTranslationDuration: TimeInterval = 0.25
     fileprivate var maxTranslationDuration: TimeInterval = 0.4
     
@@ -25,17 +28,13 @@ class BottomSheet: UIViewController {
     }
     
     lazy var heightConstraint: NSLayoutConstraint = {
-        let r = view.heightAnchor.constraint(equalToConstant: 100)
+        let r = view.heightAnchor.constraint(equalToConstant: 0)
         r.isActive = true
         return r
     }()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
     
     override func didMove(toParent parent: UIViewController?) {
@@ -51,39 +50,63 @@ class BottomSheet: UIViewController {
 }
 
 extension BottomSheet: UITableViewDelegate {
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-//        targetContentOffset.pointee = .zero
-        animateTranslationOne(velocity: velocity)
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        animateTranslation(velocity: CGPoint(x: minVelocity, y: minVelocity))
     }
-
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        animateTranslation(velocity: CGPoint(x: minVelocity, y: minVelocity))
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let h = height(velocity: velocity)
+        
+        // Stop flick from max to min when scrollview content is not at top
+        if h != heightConstraint.constant && h == minHeight && scrollView.contentOffset.y > 0 {
+            return
+        }
+        
+        // Ensure content at top with flick from min to max
+        if h != heightConstraint.constant {
+            targetContentOffset.pointee = .zero
+        }
+        
+        animateTranslation(velocity: velocity)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if shouldTranslate(scrollView) {
-            translate(scrollView)
-            print("translate")
-        } else {
-            print("not")
+        let newT = scrollView.panGestureRecognizer.translation(in: view).y
+        let t = newT - oldTranslation
+        oldTranslation = newT
+
+        // Filter large jumps.
+        // Difficulty finding suitable point to recalibrate pan translation and oldTranslation
+        if abs(t) > 20 {
+            return
+        }
+        
+        if shouldTranslate(translation: t, scrollView: scrollView) {
+            translate(t)
+            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y + t)
         }
     }
     
-    private func shouldTranslate(_ scrollView: UIScrollView) -> Bool {
+    private func shouldTranslate(translation: CGFloat, scrollView: UIScrollView) -> Bool {
         let c = heightConstraint.constant
-        let t = scrollView.panGestureRecognizer.translation(in: view).y
-        
+
         return
             scrollView.isTracking &&
-            ((c > minHeight && c < maxHeight) || (c == minHeight && t < 0) || (c == maxHeight && t > 0))
+            ((c > minHeight && c < maxHeight) || (c == minHeight && translation < 0) || (c == maxHeight && translation > 0 && scrollView.contentOffset.y <= 0))
     }
     
-    private func translate(_ scrollView: UIScrollView) {
-        scrollView.contentOffset = .zero
-        heightConstraint.constant -= scrollView.panGestureRecognizer.translation(in: view).y
+    private func translate(_ translation: CGFloat) {
+        heightConstraint.constant -= translation
         heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant))
-        scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
     }
     
     private func progress() -> CGFloat {
-        let distance = maxHeight - minHeight
         let progressDistance = heightConstraint.constant - minHeight
+        let distance = maxHeight - minHeight
         return progressDistance / distance
     }
     
@@ -97,41 +120,17 @@ extension BottomSheet: UITableViewDelegate {
         }
     }
     
-    private func duration(velocity: CGPoint) -> TimeInterval {
-        if abs(velocity.y) > minVelocity {
-            let rest = abs((maxHeight - minHeight) * (1 - progress()))
-            return TimeInterval(rest / abs(velocity.y))
-        } else {
-            return defaultTranslationDuration
-        }
-    }
-    
     private func animateTranslation(velocity: CGPoint) {
-        let v = abs(velocity.y) > minVelocity ? velocity : .zero
-        translate(toHeight: height(velocity: velocity), duration: duration(velocity: velocity), velocity: v)
-    }
-    
-    private func animateTranslationOne(velocity: CGPoint) {
-        let p = progress()
-
-        var h: CGFloat
-        var d: TimeInterval
-        var v: CGPoint
+        let h = height(velocity: velocity)
+        var d = defaultTranslationDuration
+        var v = CGPoint.zero
         
-        if abs(velocity.y) > minVelocity {
-            let rest = abs((maxHeight - minHeight) * (1 - p))
+        if abs(velocity.y) >= minVelocity {
+            let position = (maxHeight - minHeight) * progress()
+            let rest = abs(h - position)
             
-            h = velocity.y > 0 ? maxHeight: minHeight
             d = TimeInterval(rest / abs(velocity.y))
             v = velocity
-        } else if p < 0.5 {
-            h = minHeight
-            d = defaultTranslationDuration
-            v = .zero
-        } else {
-            h = maxHeight
-            d = defaultTranslationDuration
-            v = .zero
         }
         
         translate(toHeight: h, duration: d, velocity: v)
