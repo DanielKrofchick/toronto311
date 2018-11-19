@@ -1,5 +1,5 @@
 //
-//  BottomSheet.swift
+//  Sheet.swift
 //  Toronto311
 //
 //  Created by Daniel Krofchick on 2018-11-15.
@@ -8,26 +8,32 @@
 
 import UIKit
 
-class BottomSheet: UIViewController {
-    @IBOutlet weak var tableView: UITableView!
-    
+protocol SheetDelegate: class {
+    func sheet(_ sheet: Sheet, didAnimateToHeight height: CGFloat)
+}
+
+class Sheet: UIViewController {
     // We aren't able to reset the scrollview pan gesture translation,
     // as that appears to interfere with it's internal implementation.
     // Tracking old gesture translation to calculate delta.
-    fileprivate var oldTranslation: CGFloat = 0
-    fileprivate var minVelocity: CGFloat = 0.5
-    fileprivate var defaultTranslationDuration: TimeInterval = 0.25
-    fileprivate var maxTranslationDuration: TimeInterval = 0.4
+    private var oldTranslation: CGFloat = 0
+    private var minVelocity: CGFloat = 0.5
+    private var defaultTranslationDuration: TimeInterval = 0.25
+    private var maxTranslationDuration: TimeInterval = 0.4
     
-    private var minHeight: CGFloat {
+    weak var sheetDelegate: SheetDelegate?
+    
+    var didAnimateTranslation: ((CGFloat)->())?
+    
+    var minHeight: CGFloat {
         return 0.15 * (view.superview?.frame.height ?? 0)
     }
     
-    private var maxHeight: CGFloat {
+    var maxHeight: CGFloat {
         return 0.85 * (view.superview?.frame.height ?? 0)
     }
     
-    lazy var heightConstraint: NSLayoutConstraint = {
+    private lazy var heightConstraint: NSLayoutConstraint = {
         let r = view.heightAnchor.constraint(equalToConstant: 0)
         r.isActive = true
         return r
@@ -49,7 +55,7 @@ class BottomSheet: UIViewController {
     }
 }
 
-extension BottomSheet: UITableViewDelegate {
+extension Sheet: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         animateTranslation(velocity: CGPoint(x: minVelocity, y: minVelocity))
     }
@@ -91,18 +97,7 @@ extension BottomSheet: UITableViewDelegate {
         }
     }
     
-    private func shouldTranslate(translation: CGFloat, scrollView: UIScrollView) -> Bool {
-        let c = heightConstraint.constant
-
-        return
-            scrollView.isTracking &&
-            ((c > minHeight && c < maxHeight) || (c == minHeight && translation < 0) || (c == maxHeight && translation > 0 && scrollView.contentOffset.y <= 0))
-    }
-    
-    private func translate(_ translation: CGFloat) {
-        heightConstraint.constant -= translation
-        heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant))
-    }
+    // MARK: -
     
     private func progress() -> CGFloat {
         let progressDistance = heightConstraint.constant - minHeight
@@ -136,6 +131,10 @@ extension BottomSheet: UITableViewDelegate {
         translate(toHeight: h, duration: d, velocity: v)
     }
     
+    func translate(toHeight height: CGFloat) {
+        translate(toHeight: height, duration: defaultTranslationDuration, velocity: .zero)
+    }
+    
     private func translate(toHeight height: CGFloat, duration: TimeInterval, velocity: CGPoint) {
         heightConstraint.constant = height
         UIView.animate(
@@ -144,8 +143,24 @@ extension BottomSheet: UITableViewDelegate {
             usingSpringWithDamping: velocity.y == 0 ? 1 : 0.6,
             initialSpringVelocity: abs(velocity.y),
             options: [.allowUserInteraction],
-            animations: {
+            animations: { [weak self] in
+                guard let self = self else {return}
                 self.view.layoutIfNeeded()
+                self.sheetDelegate?.sheet(self, didAnimateToHeight: height)
         }, completion: nil)
+    }
+    
+    private func shouldTranslate(translation: CGFloat, scrollView: UIScrollView) -> Bool {
+        let c = heightConstraint.constant
+        let inRange = c > minHeight && c < maxHeight
+        let upFromBottom = c == minHeight && translation < 0
+        let downFromTop = c == maxHeight && translation > 0 && scrollView.contentOffset.y <= 0
+        
+        return scrollView.isTracking && (inRange || upFromBottom || downFromTop)
+    }
+    
+    private func translate(_ translation: CGFloat) {
+        heightConstraint.constant -= translation
+        heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant))
     }
 }

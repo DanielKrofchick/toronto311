@@ -22,14 +22,14 @@ extension Optional {
 }
 
 enum DataError: Error {
-    case bottomSheet
+    case wardSearchController
 }
 
 class ViewController: UIViewController {
     private let map = MKMapView()
     private var mapTap = UITapGestureRecognizer()
     private let wardViewModel = WardViewModel()
-    private var sheet: BottomSheet!
+    private var sheet: WardSearchController!
 
     private let centerOffset: CLLocationDegrees = 0.08
     private let regionRadius: CLLocationDistance = 20000
@@ -39,9 +39,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         do {
-            sheet = try (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BottomSheet") as? BottomSheet).onThrow(DataError.bottomSheet)
+            sheet = try (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WardSearchController") as? WardSearchController).onThrow(DataError.wardSearchController)
         } catch {
-            fatalError("Unable to instantiate BottomSheet")
+            fatalError("Unable to instantiate WardSearchController")
         }
         
         map.delegate = self
@@ -60,6 +60,7 @@ class ViewController: UIViewController {
         sheet.tableView.delegate = self
         sheet.tableView.dataSource = self
         sheet.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        sheet.sheetDelegate = self
         
         initConstraints()
     }
@@ -268,5 +269,13 @@ extension ViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension ViewController: SheetDelegate {
+    func sheet(_ sheet: Sheet, didAnimateToHeight height: CGFloat) {
+        if height == sheet.minHeight {
+            sheet.view.endEditing(true)
+        }
     }
 }
