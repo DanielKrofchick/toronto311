@@ -236,22 +236,6 @@ extension ViewController: UITableViewDelegate {
             self.selectPolygon(polygon)
         }
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        sheet.scrollViewDidScroll(scrollView)
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        sheet.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        sheet.scrollViewDidEndDecelerating(scrollView)
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        sheet.scrollViewDidEndDragging(scrollView, willDecelerate: decelerate)
-    }
 }
 
 extension ViewController: UITableViewDataSource {

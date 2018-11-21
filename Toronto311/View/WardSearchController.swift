@@ -10,7 +10,13 @@ import UIKit
 
 class WardSearchController: Sheet {
     @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var tableView: UITableView!    
+    @IBOutlet weak var tableView: UITableView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        scrollView = tableView
+    }
 }
 
 extension WardSearchController: UISearchBarDelegate {
