@@ -17,13 +17,18 @@ class Sheet: UIViewController {
     // as that appears to interfere with it's internal implementation.
     // Tracking old gesture translation to calculate delta.
     private var oldTranslation: CGFloat = 0
+    
+    // Minimum flick velocity to trigger resize
     private var minVelocity: CGFloat = 0.5
-    private var defaultTranslationDuration: TimeInterval = 0.25
-    private var maxTranslationDuration: TimeInterval = 0.4
+    
+    // Filter large jumps.
+    // Difficulty finding suitable point to recalibrate pan gesture translation and oldTranslation
+    private var maxResize: CGFloat = 10
+    
+    private var defaultResizeAnimationDuration: TimeInterval = 0.25
+    private var maxResizeAnimationDuration: TimeInterval = 0.4
     
     weak var sheetDelegate: SheetDelegate?
-    
-    var didAnimateTranslation: ((CGFloat)->())?
     
     var minHeight: CGFloat {
         return 0.15 * (view.superview?.frame.height ?? 0)
@@ -57,42 +62,43 @@ class Sheet: UIViewController {
 
 extension Sheet: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        animateTranslation(velocity: CGPoint(x: minVelocity, y: minVelocity))
+        animateResize(velocity: CGPoint(x: minVelocity, y: minVelocity))
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        animateTranslation(velocity: CGPoint(x: minVelocity, y: minVelocity))
+        animateResize(velocity: CGPoint(x: minVelocity, y: minVelocity))
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let h = height(velocity: velocity)
         
-        // Stop flick from max to min when scrollview content is not at top
-        if h != heightConstraint.constant && h == minHeight && scrollView.contentOffset.y > 0 {
+        // Prevent max -> min flick when scrollview content is below top
+        if heightConstraint.constant == maxHeight && h == minHeight && scrollView.contentOffset.y > 0 {
             return
         }
-        
-        // Ensure content at top with flick from min to max
-        if h != heightConstraint.constant {
+
+        // Prevent up content scroll on min -> max flick
+        if heightConstraint.constant != h {
             targetContentOffset.pointee = .zero
         }
         
-        animateTranslation(velocity: velocity)
+        animateResize(velocity: velocity)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let newT = scrollView.panGestureRecognizer.translation(in: view).y
-        let t = newT - oldTranslation
+        
+        var t = newT - oldTranslation
+        t = min(abs(t), maxResize) * (t.sign == .minus ? -1 : 1)
+
         oldTranslation = newT
 
-        // Filter large jumps.
-        // Difficulty finding suitable point to recalibrate pan translation and oldTranslation
-        if abs(t) > 20 {
-            return
-        }
+//        if t > maxResize {
+//            return
+//        }
         
-        if shouldTranslate(translation: t, scrollView: scrollView) {
-            translate(t)
+        if shouldResize(byHeight: t, scrollView: scrollView) {
+            resize(byHeight: t)
             scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y + t)
         }
     }
@@ -115,32 +121,30 @@ extension Sheet: UIScrollViewDelegate {
         }
     }
     
-    private func animateTranslation(velocity: CGPoint) {
+    private func animateResize(velocity: CGPoint) {
         let h = height(velocity: velocity)
-        var d = defaultTranslationDuration
+        var d = defaultResizeAnimationDuration
         var v = CGPoint.zero
-        
+
+        let position = (maxHeight - minHeight) * progress()
+        var rest = abs(position)
+
         if abs(velocity.y) >= minVelocity {
-            let position = (maxHeight - minHeight) * progress()
-            let rest = abs(h - position)
-            
-            d = TimeInterval(rest / abs(velocity.y))
-            v = velocity
+            rest = abs(h - position)
         }
         
-        translate(toHeight: h, duration: d, velocity: v)
+        d = TimeInterval(rest / abs(velocity.y * 1000))
+        v = velocity
+
+        resize(toHeight: h, duration: d, velocity: v)
     }
     
-    func translate(toHeight height: CGFloat) {
-        translate(toHeight: height, duration: defaultTranslationDuration, velocity: .zero)
-    }
-    
-    private func translate(toHeight height: CGFloat, duration: TimeInterval, velocity: CGPoint) {
+    func resize(toHeight height: CGFloat, duration: TimeInterval? = nil, velocity: CGPoint = .zero) {
         heightConstraint.constant = height
         UIView.animate(
-            withDuration: min(duration, maxTranslationDuration),
+            withDuration: min(duration ?? defaultResizeAnimationDuration, maxResizeAnimationDuration),
             delay: 0,
-            usingSpringWithDamping: velocity.y == 0 ? 1 : 0.6,
+            usingSpringWithDamping: velocity.y == 0 ? 0.6 : 0.6,
             initialSpringVelocity: abs(velocity.y),
             options: [.allowUserInteraction],
             animations: { [weak self] in
@@ -150,17 +154,18 @@ extension Sheet: UIScrollViewDelegate {
         }, completion: nil)
     }
     
-    private func shouldTranslate(translation: CGFloat, scrollView: UIScrollView) -> Bool {
+    private func shouldResize(byHeight height: CGFloat, scrollView: UIScrollView) -> Bool {
         let c = heightConstraint.constant
         let inRange = c > minHeight && c < maxHeight
-        let upFromBottom = c == minHeight && translation < 0
-        let downFromTop = c == maxHeight && translation > 0 && scrollView.contentOffset.y <= 0
+        let upFromBottom = c == minHeight && height < 0
+        let downFromTop = c == maxHeight && height > 0 && scrollView.contentOffset.y <= 0
+        
+        print(height)
         
         return scrollView.isTracking && (inRange || upFromBottom || downFromTop)
     }
     
-    private func translate(_ translation: CGFloat) {
-        heightConstraint.constant -= translation
-        heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant))
+    private func resize(byHeight height: CGFloat) {
+        heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant - height))
     }
 }
