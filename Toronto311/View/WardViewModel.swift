@@ -6,6 +6,14 @@
 //  Copyright © 2018 Daniel Krofchick. All rights reserved.
 //
 
+import UIKit
+
 class WardViewModel {
     var wards = [Ward]()
+    
+    func configureFilter(_ button: UIButton, wardSource: WardSource) {
+        button.layer.borderColor = UIColor.blue.cgColor
+        button.layer.borderWidth = 2
+        button.setTitle(wardSource.name(), for: .normal)
+    }
 }

@@ -42,6 +42,8 @@
 		4CBD6C8D218AA19D005E6FE6 /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 4CBD6C8C218AA19D005E6FE6 /* Cartfile */; };
 		4CBD6C91218AA254005E6FE6 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 4CBD6C90218AA254005E6FE6 /* .swiftlint.yml */; };
 		4CBD6C94218AA80E005E6FE6 /* CLLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBD6C93218AA80E005E6FE6 /* CLLocation.swift */; };
+		4CBDDB3F21A63FC000E79E7B /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDB3E21A63FC000E79E7B /* Optional.swift */; };
+		4CBDDB4121A6400A00E79E7B /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDB4021A6400A00E79E7B /* Misc.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +83,8 @@
 		4CBD6C8C218AA19D005E6FE6 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
 		4CBD6C90218AA254005E6FE6 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
 		4CBD6C93218AA80E005E6FE6 /* CLLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocation.swift; sourceTree = "<group>"; };
+		4CBDDB3E21A63FC000E79E7B /* Optional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
+		4CBDDB4021A6400A00E79E7B /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		938412E85F8F9B59B673DF17 /* Pods-Toronto311.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.debug.xcconfig"; sourceTree = "<group>"; };
 		980C343EB391F94712ABD384 /* Pods_Toronto311.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Toronto311.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9B3A5801A3E242C550F66F6 /* Pods-Toronto311.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.release.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.release.xcconfig"; sourceTree = "<group>"; };
@@ -145,7 +149,6 @@
 				4CBD6C95218AA862005E6FE6 /* Models */,
 				4C7DC50D2186B5F800F72BDC /* Extensions */,
 				4C7DC5002186A13400F72BDC /* Assets.xcassets */,
-				4C7DC4FD2186A13400F72BDC /* Main.storyboard */,
 				4C7DC5022186A13400F72BDC /* LaunchScreen.storyboard */,
 				4C7DC5052186A13500F72BDC /* Info.plist */,
 				4CBD6C8C218AA19D005E6FE6 /* Cartfile */,
@@ -168,6 +171,8 @@
 				4CB505A421993F3700CA1F98 /* Collection.swift */,
 				4CB76E0021A1034C001E0015 /* UIView.swift */,
 				4CB76E0221A1088C001E0015 /* UIViewController.swift */,
+				4CBDDB3E21A63FC000E79E7B /* Optional.swift */,
+				4CBDDB4021A6400A00E79E7B /* Misc.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -179,6 +184,7 @@
 				4CB76E0421A25E90001E0015 /* WardSearchController.swift */,
 				4CB505A02199373900CA1F98 /* WardViewModel.swift */,
 				4CB76DFE219E7541001E0015 /* Sheet.swift */,
+				4C7DC4FD2186A13400F72BDC /* Main.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -385,6 +391,7 @@
 				4C077C0C218F573D00C8AFD7 /* MKPolygon.swift in Sources */,
 				4CB505A521993F3700CA1F98 /* Collection.swift in Sources */,
 				4CB5059F2199312200CA1F98 /* OSLog.swift in Sources */,
+				4CBDDB3F21A63FC000E79E7B /* Optional.swift in Sources */,
 				4C28C33B218E9D1C00542A3B /* MKPolyLine.swift in Sources */,
 				4C7DC5112187DE6A00F72BDC /* FireStation.swift in Sources */,
 				4CB76E0521A25E90001E0015 /* WardSearchController.swift in Sources */,
@@ -398,6 +405,7 @@
 				4C80AE292192A521006DF2D6 /* DataController.swift in Sources */,
 				4C7DC50C2186A16200F72BDC /* API.swift in Sources */,
 				4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */,
+				4CBDDB4121A6400A00E79E7B /* Misc.swift in Sources */,
 				4C95AC53219D2A7500A58E32 /* WardPolygon.swift in Sources */,
 				4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */,
 			);

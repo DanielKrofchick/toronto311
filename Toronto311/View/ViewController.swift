@@ -10,17 +10,6 @@ import UIKit
 import MapKit
 import GEOSwift
 
-extension Optional {
-    func onThrow(_ errorExpression: @autoclosure () -> Error) throws -> Wrapped {
-        switch self {
-        case .some(let value):
-            return value
-        case .none:
-            throw errorExpression()
-        }
-    }
-}
-
 enum DataError: Error {
     case wardSearchController
 }
@@ -28,7 +17,7 @@ enum DataError: Error {
 class ViewController: UIViewController {
     private let map = MKMapView()
     private var mapTap = UITapGestureRecognizer()
-    private let wardViewModel = WardViewModel()
+    private let viewModel = WardViewModel()
     private var sheet: WardSearchController!
 
     private let centerOffset: CLLocationDegrees = 0.08
@@ -62,6 +51,9 @@ class ViewController: UIViewController {
         sheet.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         sheet.sheetDelegate = self
         
+        viewModel.configureFilter(sheet.wardSource1, wardSource: WardSource.WARD_WGS84)
+        viewModel.configureFilter(sheet.wardSource2, wardSource: WardSource.icitw_wgs84)
+        
         initConstraints()
     }
     
@@ -72,23 +64,12 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        centerMapOnLocation(location: .toronto)
-    }
-        
-    func centerMapOnLocation(location: CLLocation) {
-        var center = location.coordinate
-        center.latitude += centerOffset
-        
-        let coordinateRegion = MKCoordinateRegion(center: center,
-                                                  latitudinalMeters: regionRadius,
-                                                  longitudinalMeters: regionRadius)
-        map.setRegion(coordinateRegion, animated: true)
+        map.setRegion(torontoRegion(), animated: true)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        map.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+    private func torontoRegion() -> MKCoordinateRegion {
+        let location = CLLocation.toronto + CLLocation(latitude: 0.08, longitude: 0)
+        return MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
     }
     
     private func initConstraints() {
@@ -123,22 +104,13 @@ extension ViewController {
     private func finishProcessing() {
         measure {
             DataController.shared.save()
-            wardViewModel.wards = Ward.all()
+            viewModel.wards = Ward.all()
             DispatchQueue.main.async {
                 [weak self] in
                 self?.sheet.tableView.reloadData()
             }
         }
     }
-}
-
-@discardableResult
-func measure<A>(name: String = "", _ block: () -> A) -> A {
-    let startTime = CACurrentMediaTime()
-    let result = block()
-    let timeElapsed = CACurrentMediaTime() - startTime
-    print("Time: \(name) - \(timeElapsed)")
-    return result
 }
 
 extension ViewController: MKMapViewDelegate {
@@ -230,7 +202,7 @@ extension ViewController {
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if
-            let ward = wardViewModel.wards[safe: indexPath.row],
+            let ward = viewModel.wards[safe: indexPath.row],
             let polygon = map.overlays.first(where: {($0 as? WardPolygon)?.ward == ward}) as? MKPolygon
         {
             self.selectPolygon(polygon)
@@ -240,13 +212,13 @@ extension ViewController: UITableViewDelegate {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return wardViewModel.wards.count
+        return viewModel.wards.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
 
-        if let ward = wardViewModel.wards[safe: indexPath.row] {
+        if let ward = viewModel.wards[safe: indexPath.row] {
             cell.backgroundColor = .clear
             cell.textLabel?.font = .preferredFont(forTextStyle: .headline)
             cell.textLabel?.text = ward.areaName

@@ -65,8 +65,24 @@
                                     <outlet property="delegate" destination="Ohs-K1-8kD" id="ITK-LU-bp6"/>
                                 </connections>
                             </searchBar>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="7ns-lS-lwH">
+                                <rect key="frame" x="0.0" y="76" width="375" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4a-qi-Jnz">
+                                        <rect key="frame" x="0.0" y="0.0" width="175" height="50"/>
+                                        <state key="normal" title="1"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3vx-9h-sQh">
+                                        <rect key="frame" x="200" y="0.0" width="175" height="50"/>
+                                        <state key="normal" title="2"/>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="hem-7O-wf1"/>
+                                </constraints>
+                            </stackView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lkc-9e-qOp">
-                                <rect key="frame" x="0.0" y="76" width="375" height="591"/>
+                                <rect key="frame" x="0.0" y="126" width="375" height="541"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
@@ -74,26 +90,32 @@
                         <constraints>
                             <constraint firstItem="96Z-g1-Pzw" firstAttribute="width" secondItem="fvB-WY-hzL" secondAttribute="width" id="5PK-Mn-bap"/>
                             <constraint firstItem="Lkc-9e-qOp" firstAttribute="centerX" secondItem="s8L-60-3St" secondAttribute="centerX" id="78h-6v-HyF"/>
+                            <constraint firstItem="7ns-lS-lwH" firstAttribute="top" secondItem="GT6-j1-VLG" secondAttribute="bottom" id="9ML-JP-DyX"/>
+                            <constraint firstItem="Lkc-9e-qOp" firstAttribute="top" secondItem="7ns-lS-lwH" secondAttribute="bottom" id="AGj-oj-49b"/>
                             <constraint firstItem="96Z-g1-Pzw" firstAttribute="height" secondItem="fvB-WY-hzL" secondAttribute="height" id="Bk0-Da-qmG"/>
                             <constraint firstItem="96Z-g1-Pzw" firstAttribute="centerY" secondItem="s8L-60-3St" secondAttribute="centerY" id="MVj-uU-Zxg"/>
                             <constraint firstItem="96Z-g1-Pzw" firstAttribute="centerX" secondItem="s8L-60-3St" secondAttribute="centerX" id="Mgp-Zn-iyN"/>
                             <constraint firstItem="GT6-j1-VLG" firstAttribute="top" secondItem="s8L-60-3St" secondAttribute="top" id="S6y-ah-jcD"/>
                             <constraint firstItem="Lkc-9e-qOp" firstAttribute="bottom" secondItem="s8L-60-3St" secondAttribute="bottom" id="V9f-mS-BdA"/>
                             <constraint firstItem="Lkc-9e-qOp" firstAttribute="width" secondItem="fvB-WY-hzL" secondAttribute="width" id="a1g-Ao-ACx"/>
-                            <constraint firstItem="Lkc-9e-qOp" firstAttribute="top" secondItem="GT6-j1-VLG" secondAttribute="bottom" id="oNN-CV-ycP"/>
+                            <constraint firstItem="s8L-60-3St" firstAttribute="trailing" secondItem="7ns-lS-lwH" secondAttribute="trailing" id="h5y-yv-ZkP"/>
+                            <constraint firstItem="7ns-lS-lwH" firstAttribute="leading" secondItem="s8L-60-3St" secondAttribute="leading" id="lwI-b8-9iY"/>
                             <constraint firstItem="s8L-60-3St" firstAttribute="trailing" secondItem="GT6-j1-VLG" secondAttribute="trailing" id="vVv-NT-jcY"/>
                             <constraint firstItem="GT6-j1-VLG" firstAttribute="leading" secondItem="s8L-60-3St" secondAttribute="leading" id="ySa-WY-2z6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="s8L-60-3St"/>
                     </view>
                     <connections>
+                        <outlet property="filters" destination="7ns-lS-lwH" id="Vvo-iH-TRc"/>
                         <outlet property="searchBar" destination="GT6-j1-VLG" id="uaf-bY-sLs"/>
                         <outlet property="tableView" destination="Lkc-9e-qOp" id="XuT-BR-OXj"/>
+                        <outlet property="wardSource1" destination="N4a-qi-Jnz" id="vqZ-vS-a7V"/>
+                        <outlet property="wardSource2" destination="3vx-9h-sQh" id="39H-1o-ZL8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2ez-BZ-t4Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="852" y="11"/>
+            <point key="canvasLocation" x="375" y="-9"/>
         </scene>
     </scenes>
 </document>

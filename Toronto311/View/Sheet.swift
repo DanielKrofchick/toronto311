@@ -95,7 +95,7 @@ extension Sheet: UIScrollViewDelegate {
         animateResize(velocity: velocity)
     }
 
-    private func progress() -> CGFloat {
+    func progress() -> CGFloat {
         let progressDistance = heightConstraint.constant - minHeight
         let distance = maxHeight - minHeight
         
@@ -140,7 +140,7 @@ extension Sheet: UIScrollViewDelegate {
     
     func resize(toHeight height: CGFloat, duration: TimeInterval? = nil, velocity: CGPoint? = nil) {
         heightConstraint.constant = height
-        
+                
         // Magic number that works
         let springVelocityFactor: CGFloat = 100
         

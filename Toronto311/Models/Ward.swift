@@ -15,9 +15,18 @@ extension NSEntityDescriptionName {
     static var ward: String {return "Ward"}
 }
 
-enum WardSource: String {
+enum WardSource: String, CaseIterable {
     case WARD_WGS84
     case icitw_wgs84
+    
+    func name() -> String {
+        switch self {
+        case .WARD_WGS84:
+            return "WARD"
+        case .icitw_wgs84:
+            return "icitw"
+        }
+    }
 }
 
 class Ward: NSManagedObject, Codable {
