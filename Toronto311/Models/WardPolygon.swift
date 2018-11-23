@@ -18,15 +18,16 @@ extension WardPolygon {
     func overlayRenderer() -> MKOverlayRenderer {
         let r = MKPolygonRenderer(polygon: self)
         
-        r.strokeColor = .green
         r.lineWidth = 1.5
         r.fillColor = UIColor.clear
         
         if let source = ward?.wardSource {
             switch source {
             case .icitw_wgs84:
+                r.strokeColor = .green
                 r.fillColor = isSelected ? UIColor.red.withAlphaComponent(0.2) : UIColor.clear
             case .WARD_WGS84:
+                r.strokeColor = .orange
                 r.fillColor = isSelected ? UIColor.blue.withAlphaComponent(0.2) : UIColor.clear
             }
         }

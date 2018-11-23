@@ -48,6 +48,7 @@ extension WardSearchController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         resize(toHeight: maxHeight)
     }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         resize(toHeight: minHeight)
     }

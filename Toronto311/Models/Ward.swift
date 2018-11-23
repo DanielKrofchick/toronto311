@@ -11,24 +11,6 @@ import MapKit
 import CoreData
 import GEOSwift
 
-extension NSEntityDescriptionName {
-    static var ward: String {return "Ward"}
-}
-
-enum WardSource: String, CaseIterable {
-    case WARD_WGS84
-    case icitw_wgs84
-    
-    func name() -> String {
-        switch self {
-        case .WARD_WGS84:
-            return "WARD"
-        case .icitw_wgs84:
-            return "icitw"
-        }
-    }
-}
-
 class Ward: NSManagedObject, Codable {
     var areaID: Int32? {
         get {
@@ -158,8 +140,8 @@ class Ward: NSManagedObject, Codable {
     required convenience init(from decoder: Decoder) throws {
         guard
             let context = decoder.userInfo[.context] as? NSManagedObjectContext,
-            let entity = NSEntityDescription.entity(forEntityName: NSEntityDescriptionName.ward, in: context)
-            else {fatalError("Failed to decode \(NSEntityDescriptionName.ward)")}
+            let entity = NSEntityDescription.entity(forEntityName: Ward.entityName, in: context)
+            else {fatalError("Failed to decode \(Ward.entityName)")}
         
         self.init(entity: entity, insertInto: context)
         
@@ -253,6 +235,28 @@ extension Ward: MKAnnotation {
 }
 
 extension Ward {
+    private func shape() -> MKShape? {
+        return features().first?.geometries?.first?.boundary()?.mapShape()
+    }
+    
+    func addPolygon(to map: MKMapView) {
+        if let overlay = shape() as? MKPolyline {
+            map.addOverlay(overlay.polygon().wardPolygon(self))
+        }
+    }
+    
+    func addPolyline(to map: MKMapView) {
+        if let overlay = shape() as? MKPolyline {
+            map.addOverlay(overlay.wardPolyline(self))
+        }
+    }
+    
+    func addAnnotation(to map: MKMapView) {
+        map.addAnnotation(self)
+    }
+}
+
+extension Ward {
     func features() -> [Feature] {
         var result = [Feature]()
         
@@ -270,20 +274,21 @@ extension Ward {
 
 extension Ward {
     static func all() -> [Ward] {
-        var result = [Ward]()
-        
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: NSEntityDescriptionName.ward)
-        
-        DataController.shared.context.performAndWait {
-            do {
-                if let fetched = try DataController.shared.context.fetch(request) as? [Ward] {
-                    result.append(contentsOf: fetched)
-                }
-            } catch {
-                fatalError("failed to fetch wards: \(error)")
-            }
-        }
-        
-        return result
+        return (try? objects(context: DataController.shared.context)) ?? []
+    }
+    
+    static func of(source: WardSource) -> [Ward] {
+        return (try? objects(
+            context: DataController.shared.context,
+            predicate: NSPredicate(format: "source = %@", source.rawValue)
+        )) ?? []
+    }
+}
+
+extension Ward: Fetchable {
+    typealias FetchableType = Ward
+    
+    static var entityName: String {
+        return "Ward"
     }
 }

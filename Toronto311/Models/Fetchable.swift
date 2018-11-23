@@ -14,7 +14,7 @@ protocol Fetchable
 {
     associatedtype FetchableType: NSManagedObject
     
-    static func entityName() -> String
+    static var entityName: String {get}
     static func fetchRequest(
         context: NSManagedObjectContext,
         predicate: NSPredicate?,
@@ -33,7 +33,7 @@ protocol Fetchable
         -> Int
 }
 
-extension Fetchable where Self: NSManagedObject, FetchableType == Self
+extension Fetchable //where Self: NSManagedObject, FetchableType == Self
 {
     static func fetchRequest(
         context: NSManagedObjectContext,
@@ -44,7 +44,7 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
     {
         let request = NSFetchRequest<NSFetchRequestResult>()
         
-        request.entity = .entity(forEntityName: entityName(), in: context)
+        request.entity = .entity(forEntityName: entityName, in: context)
         request.predicate = predicate
         
         if let sortedBy = sortedBy {
@@ -61,8 +61,19 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
         ascending: Bool = false)
         throws -> [FetchableType]
     {
-        let request = fetchRequest(context: context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)
-        return try context.fetch(request) as? [FetchableType] ?? []
+        var result = [FetchableType]()
+        
+        context.performAndWait {
+            do {
+                let request = fetchRequest(context: context, predicate: predicate, sortedBy: sortedBy, ascending: ascending)
+                let fetched = try context.fetch(request) as? [FetchableType] ?? []
+                result.append(contentsOf: fetched)
+            } catch {
+                fatalError("error fetching \(entityName): \(error)")
+            }
+        }
+        
+        return result
     }
     
     static func objectCount(
@@ -70,12 +81,16 @@ extension Fetchable where Self: NSManagedObject, FetchableType == Self
         predicate: NSPredicate? = nil)
         -> Int
     {
-        do {
-            return try context.count(for: fetchRequest(context: context, predicate: predicate))
-        } catch {
-            print("Error retrieving objectCount for \(entityName()): \(error)")
+        var result: Int = 0
+        
+        context.performAndWait {
+            do {
+                result = try context.count(for: fetchRequest(context: context, predicate: predicate))
+            } catch {
+                print("error fetching objectCount for \(entityName): \(error)")
+            }
         }
         
-        return 0
+        return result
     }
 }

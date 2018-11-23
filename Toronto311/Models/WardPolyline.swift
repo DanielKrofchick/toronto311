@@ -18,9 +18,17 @@ extension WardPolyline {
     func overlayRenderer() -> MKOverlayRenderer {
         let r = MKPolylineRenderer(polyline: self)
         
-        r.strokeColor = .blue
         r.lineWidth = 1.5
         r.strokeColor = isSelected ? .red : .blue
+
+        if let source = ward?.wardSource {
+            switch source {
+            case .icitw_wgs84:
+                r.strokeColor = .blue
+            case .WARD_WGS84:
+                r.strokeColor = .brown
+            }
+        }
         
         return r
     }

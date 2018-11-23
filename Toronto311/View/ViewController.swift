@@ -14,21 +14,28 @@ enum DataError: Error {
     case wardSearchController
 }
 
+private struct WardButton {
+    let wardSource: WardSource
+    let button: UIButton
+}
+
 class ViewController: UIViewController {
     private let map = MKMapView()
     private var mapTap = UITapGestureRecognizer()
     private let viewModel = WardViewModel()
     private var sheet: WardSearchController!
+    
+    private var wardButtons = [WardButton]()
 
-    private let centerOffset: CLLocationDegrees = 0.08
-    private let regionRadius: CLLocationDistance = 20000
     private let reuseIdentifier = "reuseIdentifier"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         do {
-            sheet = try (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WardSearchController") as? WardSearchController).onThrow(DataError.wardSearchController)
+            sheet = try (UIStoryboard(name: "Main", bundle: nil)
+                .instantiateViewController(withIdentifier: "WardSearchController") as? WardSearchController)
+                .onThrow(DataError.wardSearchController)
         } catch {
             fatalError("Unable to instantiate WardSearchController")
         }
@@ -51,10 +58,14 @@ class ViewController: UIViewController {
         sheet.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         sheet.sheetDelegate = self
         
-        viewModel.configureFilter(sheet.wardSource1, wardSource: WardSource.WARD_WGS84)
-        viewModel.configureFilter(sheet.wardSource2, wardSource: WardSource.icitw_wgs84)
+        WardSource.allCases.sorted().forEach { (wardSource) in
+            let button = viewModel.configureFilter(wardSource: wardSource)
+            button.addTarget(self, action: #selector(sourceTap(button:)), for: .touchUpInside)
+            wardButtons.append(WardButton(wardSource: wardSource, button: button))
+            sheet.filters.addArrangedSubview(button)
+        }
         
-        initConstraints()
+         initConstraints()
     }
     
     private func sheetFrame(_ fraction: CGFloat) -> CGRect {
@@ -68,12 +79,43 @@ class ViewController: UIViewController {
     }
     
     private func torontoRegion() -> MKCoordinateRegion {
+        let radius: CLLocationDistance = 20000
         let location = CLLocation.toronto + CLLocation(latitude: 0.08, longitude: 0)
-        return MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+        return MKCoordinateRegion(center: location.coordinate, latitudinalMeters: radius, longitudinalMeters: radius)
     }
     
     private func initConstraints() {
         map.pin()
+    }
+}
+
+extension ViewController {
+    @objc func sourceTap(button: UIButton) {
+        if let source = source(for: button) {
+            load(source: source)
+        }
+    }
+    
+    private func source(for button: UIButton) -> WardSource? {
+        return wardButtons.first(where: {$0.button == button})?.wardSource
+    }
+    
+    private func load(source: WardSource) {
+        measure(name: "fetch-\(source.name())") {
+            if let wards = try? Ward.objects(
+                context: DataController.shared.context,
+                predicate: NSPredicate(format: "source = %@", source.rawValue),
+                ascending: true)
+            {
+                viewModel.wards = wards
+            }
+        }
+        DispatchQueue.main.async {
+            [weak self, map = map] in
+            map.removeOverlays(map.overlays)
+            self?.viewModel.wards.forEach({[map = map] in $0.addPolyline(to: map)})
+            self?.sheet.tableView.reloadData()
+        }
     }
 }
 
@@ -88,27 +130,14 @@ extension ViewController {
     }
     
     private func process(_ ward: Ward) {
-        if
-            let geometry = ward.features().first?.geometries?.first,
-            let overlay = geometry.boundary()?.mapShape() as? MKPolyline
-        {
-            DispatchQueue.main.async {
-                [weak self] in
-                self?.map.addOverlay(overlay.polygon().wardPolygon(ward))
-//                self?.map.addOverlay(overlay.wardPolyline(ward))
-//                self?.map.addAnnotation(ward)
-            }
-        }
+//        ward.addPolygon(to: map)
+//        ward.addPolyline(to: map)
+//        ward.addAnnotation(to: map)
     }
     
     private func finishProcessing() {
-        measure {
+        measure(name: "save-data") {
             DataController.shared.save()
-            viewModel.wards = Ward.all()
-            DispatchQueue.main.async {
-                [weak self] in
-                self?.sheet.tableView.reloadData()
-            }
         }
     }
 }

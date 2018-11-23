@@ -67,16 +67,6 @@
                             </searchBar>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="7ns-lS-lwH">
                                 <rect key="frame" x="0.0" y="76" width="375" height="50"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4a-qi-Jnz">
-                                        <rect key="frame" x="0.0" y="0.0" width="175" height="50"/>
-                                        <state key="normal" title="1"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3vx-9h-sQh">
-                                        <rect key="frame" x="200" y="0.0" width="175" height="50"/>
-                                        <state key="normal" title="2"/>
-                                    </button>
-                                </subviews>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="hem-7O-wf1"/>
                                 </constraints>
@@ -109,8 +99,6 @@
                         <outlet property="filters" destination="7ns-lS-lwH" id="Vvo-iH-TRc"/>
                         <outlet property="searchBar" destination="GT6-j1-VLG" id="uaf-bY-sLs"/>
                         <outlet property="tableView" destination="Lkc-9e-qOp" id="XuT-BR-OXj"/>
-                        <outlet property="wardSource1" destination="N4a-qi-Jnz" id="vqZ-vS-a7V"/>
-                        <outlet property="wardSource2" destination="3vx-9h-sQh" id="39H-1o-ZL8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2ez-BZ-t4Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
