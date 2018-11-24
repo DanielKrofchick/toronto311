@@ -28,3 +28,22 @@ extension UIView {
         }
     }
 }
+
+extension CGSize {
+    static var one: CGSize {return CGSize(width: 1, height: 1)}
+}
+
+extension UIImage {
+    convenience init?(color: UIColor, size: CGSize = .one) {
+        UIGraphicsBeginImageContext(size)
+        color.setFill()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        if let data = image?.pngData() {
+            self.init(data: data)
+        }
+        
+        return nil
+    }
+}

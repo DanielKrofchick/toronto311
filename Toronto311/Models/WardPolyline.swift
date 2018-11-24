@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class WardPolyline: MKPolyline {
+class WardPolyline: MKPolyline, WardOverlay {
     var ward: Ward?
     var isSelected = false
 }
@@ -19,14 +19,13 @@ extension WardPolyline {
         let r = MKPolylineRenderer(polyline: self)
         
         r.lineWidth = 1.5
-        r.strokeColor = isSelected ? .red : .blue
 
         if let source = ward?.wardSource {
             switch source {
             case .icitw_wgs84:
-                r.strokeColor = .blue
+                r.strokeColor = isSelected ? .red : .blue
             case .WARD_WGS84:
-                r.strokeColor = .brown
+                r.strokeColor = isSelected ? .brown : .green
             }
         }
         

@@ -9,22 +9,39 @@
 import MapKit
 
 extension MKMapView {
-    func polygon(for point: CGPoint) -> MKPolygon? {
-        var intersectPoly: MKPolygon?
-
+//    func polygon(for point: CGPoint) -> MKPolygon? {
+//        var intersectPoly: MKPolygon?
+//
+//        let coord = convert(point, toCoordinateFrom: self)
+//
+//        for overlay in overlays {
+//            if let overlay = overlay as? MKPolygon {
+//                let renderer = MKPolygonRenderer(polygon: overlay)
+//                if renderer.path.contains(renderer.point(for: MKMapPoint(coord))) {
+//                    intersectPoly = overlay
+//                    break
+//                }
+//            }
+//        }
+//
+//        return intersectPoly
+//    }
+        
+    func overlays(for point: CGPoint) -> [MKOverlay] {
+        var intersect = [MKOverlay]()
+        
         let coord = convert(point, toCoordinateFrom: self)
         
         for overlay in overlays {
-            if let overlay = overlay as? MKPolygon {
-                let renderer = MKPolygonRenderer(polygon: overlay)
+            if let o = overlay as? MKPolygon ?? (overlay as? MKPolyline)?.polygon() {
+                let renderer = MKPolygonRenderer(polygon: o)
                 if renderer.path.contains(renderer.point(for: MKMapPoint(coord))) {
-                    intersectPoly = overlay
-                    break
+                    intersect.append(overlay)
                 }
             }
         }
         
-        return intersectPoly
+        return intersect
     }
     
     // https://stackoverflow.com/questions/11713788/how-to-detect-taps-on-mkpolylines-overlays-like-maps-app

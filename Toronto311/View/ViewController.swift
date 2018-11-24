@@ -53,6 +53,7 @@ class ViewController: UIViewController {
         }
         
         addAndConfigureChild(sheet)
+        sheet.tableView.allowsMultipleSelection = true
         sheet.tableView.delegate = self
         sheet.tableView.dataSource = self
         sheet.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
@@ -61,6 +62,8 @@ class ViewController: UIViewController {
         WardSource.allCases.sorted().forEach { (wardSource) in
             let button = viewModel.configureFilter(wardSource: wardSource)
             button.addTarget(self, action: #selector(sourceTap(button:)), for: .touchUpInside)
+//            button.setBackgroundImage(UIImage(color: .green), for: .selected)
+//            button.setBackgroundImage(UIImage(color: .green), for: [.selected, .highlighted])
             wardButtons.append(WardButton(wardSource: wardSource, button: button))
             sheet.filters.addArrangedSubview(button)
         }
@@ -91,25 +94,35 @@ class ViewController: UIViewController {
 
 extension ViewController {
     @objc func sourceTap(button: UIButton) {
-        if let source = source(for: button) {
-            load(source: source)
-        }
+        button.isSelected = !button.isSelected
+        load()
     }
     
     private func source(for button: UIButton) -> WardSource? {
         return wardButtons.first(where: {$0.button == button})?.wardSource
     }
     
-    private func load(source: WardSource) {
-        measure(name: "fetch-\(source.name())") {
-            if let wards = try? Ward.objects(
-                context: DataController.shared.context,
-                predicate: NSPredicate(format: "source = %@", source.rawValue),
-                ascending: true)
-            {
-                viewModel.wards = wards
+    private func load() {
+        let selected = wardButtons.filter({ $0.button.isSelected })
+        let arguments = selected.map({ $0.wardSource.rawValue })
+        let format = selected.reduce("") { (result, _) -> String in
+            return result + (result.isEmpty ? "" : " OR ") + "source = %@"
+        }
+        
+        if format.isEmpty {
+            viewModel.wards = []
+        } else {
+            measure(name: "fetch-\(arguments)") {
+                if let wards = try? Ward.objects(
+                    context: DataController.shared.context,
+                    predicate: NSPredicate(format: format, argumentArray: arguments),
+                    ascending: true)
+                {
+                    viewModel.wards = wards
+                }
             }
         }
+        
         DispatchQueue.main.async {
             [weak self, map = map] in
             map.removeOverlays(map.overlays)
@@ -178,17 +191,14 @@ extension ViewController: MKMapViewDelegate {
 extension ViewController {
     @objc func mapTapped(_ tap: UITapGestureRecognizer) {
         inside(tap)
-        nearest(tap)
+//        nearest(tap)
     }
 
     private func inside(_ tap: UITapGestureRecognizer) {
-        if
-            tap.state == .recognized,
-            let polygon = map.polygon(for: tap.location(in: map)) as? WardPolygon,
-            let ward = polygon.ward
-        {
-            selectPolygon(polygon)
-            print(ward)
+        if tap.state == .recognized {
+            map.overlays(for: tap.location(in: map)).forEach { [map = map] (overlay) in
+                overlay.toggle(map: map)
+            }
         }
     }
 
@@ -205,21 +215,29 @@ extension ViewController {
         }
     }
     
-    func selectPolygon(_ polygon: MKPolygon) {
-        map.overlays.forEach { overlay in
-            guard let overlay = overlay as? WardPolygon else {return}
-            let v = overlay == polygon
-            if v {
-                overlay.isSelected.toggle()
-                map.removeOverlay(overlay)
-                map.addOverlay(overlay)
-            } else if overlay.isSelected != v {
-                overlay.isSelected = v
-                map.removeOverlay(overlay)
-                map.addOverlay(overlay)
-            }
-        }
-    }
+//    func selectPolygon(_ polygon: MKPolygon) {
+//        map.overlays.forEach { overlay in
+//            guard let overlay = overlay as? WardPolygon else {return}
+//            let v = overlay == polygon
+//            if v {
+//                overlay.isSelected.toggle()
+//                map.removeOverlay(overlay)
+//                map.addOverlay(overlay)
+//            } else if overlay.isSelected != v {
+//                overlay.isSelected = v
+//                map.removeOverlay(overlay)
+//                map.addOverlay(overlay)
+//            }
+//        }
+//    }
+    
+//    func toggle(overlay: MKOverlay) {
+//        if let overlay = overlay as? WardOverlay {
+//            overlay.isSelected.toggle()
+//        }
+//        map.removeOverlay(overlay)
+//        map.addOverlay(overlay)
+//    }
     
     private func selected() -> WardPolygon? {
         return map.overlays.first { (overlay) -> Bool in
@@ -230,11 +248,19 @@ extension ViewController {
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        toggle(indexPath: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        toggle(indexPath: indexPath)
+    }
+    
+    private func toggle(indexPath: IndexPath) {
         if
             let ward = viewModel.wards[safe: indexPath.row],
-            let polygon = map.overlays.first(where: {($0 as? WardPolygon)?.ward == ward}) as? MKPolygon
+            let overlay = map.overlays.first(where: {($0 as? WardOverlay)?.ward == ward})
         {
-            self.selectPolygon(polygon)
+            overlay.toggle(map: map)
         }
     }
 }
