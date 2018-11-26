@@ -11,10 +11,15 @@ import UIKit
 class WardViewModel {
     var wards = [Ward]()
     
-    func configureFilter(_ button: UIButton = UIButton(type: .system), wardSource: WardSource) -> UIButton {
-        button.layer.borderColor = UIColor.blue.cgColor
-        button.layer.borderWidth = 2
+    func configureFilter(_ button: UIButton = UIButton(type: .custom), wardSource: WardSource) -> UIButton {
         button.setTitle(wardSource.name(), for: .normal)
+        button.layer.borderWidth = 2
+        button.layer.borderColor = UIColor.blue.cgColor
+        button.setBackgroundImage(UIImage(color: UIColor.blue.withAlphaComponent(0.3)), for: .normal)
+        button.setBackgroundImage(UIImage(color: UIColor.blue.withAlphaComponent(0.3)), for: [.highlighted])
+        button.setBackgroundImage(UIImage(color: .blue), for: [.selected])
+        button.setBackgroundImage(UIImage(color: .blue), for: [.selected, .highlighted])
+
         return button
     }
 }

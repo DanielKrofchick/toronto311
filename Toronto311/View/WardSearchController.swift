@@ -36,10 +36,16 @@ class WardSearchController: Sheet {
         layoutSheet()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        layoutSheet()
+    }
+    
     private func layoutSheet() {
         let p = progress()
         minHeight = filters.frame.maxY
-        maxHeight = 0.85 * (view.superview?.frame.size.height ?? 0)
+        maxHeight = 0.6 * (view.superview?.frame.size.height ?? 0)
         resize(toHeight: p < 0.5 ? minHeight : maxHeight)
     }
 }

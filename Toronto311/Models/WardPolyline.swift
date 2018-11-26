@@ -25,7 +25,7 @@ extension WardPolyline {
             case .icitw_wgs84:
                 r.strokeColor = isSelected ? .red : .blue
             case .WARD_WGS84:
-                r.strokeColor = isSelected ? .brown : .green
+                r.strokeColor = isSelected ? .brown : .orange
             }
         }
         

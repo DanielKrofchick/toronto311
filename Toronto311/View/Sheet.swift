@@ -113,21 +113,23 @@ extension Sheet: UIScrollViewDelegate {
     }
     
     private func canResize(byHeight height: CGFloat) -> Bool {
-        let c = heightConstraint.constant
-        let inRange = c > minHeight && c < maxHeight
-        let upFromBottom = c == minHeight && height < 0
-        let downFromTop = c == maxHeight && height > 0 && (scrollView?.contentOffset.y ?? 0 <= 0)
-        
-        return inRange || upFromBottom || downFromTop
+        return scrollView?.contentOffset.y ?? 0 <= 0
     }
     
     private func resize(byHeight height: CGFloat) {
-        heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant - height))
+        let delta = updateHeightConstraint(by: height)
         
         if let scrollView = scrollView {
-            let h = height * (height > 0 ? -1 : 1)
-            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y + h)
+            let d = delta * (delta > 0 ? -1 : 1)
+            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y + d)
         }
+    }
+    
+    // Returns the height change delta which may be of less magnitude than the input height
+    private func updateHeightConstraint(by height: CGFloat) -> CGFloat {
+        let oldConstant = heightConstraint.constant
+        heightConstraint.constant = min(maxHeight, max(minHeight, heightConstraint.constant - height))
+        return heightConstraint.constant - oldConstant
     }
     
     private func animateResize(velocity: CGPoint) {

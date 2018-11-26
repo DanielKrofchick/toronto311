@@ -45,6 +45,8 @@
 		4CBDDB3F21A63FC000E79E7B /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDB3E21A63FC000E79E7B /* Optional.swift */; };
 		4CBDDB4121A6400A00E79E7B /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDB4021A6400A00E79E7B /* Misc.swift */; };
 		4CD236D921A7B7B500CA9ED2 /* WardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD236D821A7B7B500CA9ED2 /* WardSource.swift */; };
+		4CE73E6021ABBA0600EA1553 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE73E5F21ABBA0600EA1553 /* UIImage.swift */; };
+		4CE73E6221ABBA2100EA1553 /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE73E6121ABBA2100EA1553 /* CGSize.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +89,8 @@
 		4CBDDB3E21A63FC000E79E7B /* Optional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
 		4CBDDB4021A6400A00E79E7B /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		4CD236D821A7B7B500CA9ED2 /* WardSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardSource.swift; sourceTree = "<group>"; };
+		4CE73E5F21ABBA0600EA1553 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		4CE73E6121ABBA2100EA1553 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
 		938412E85F8F9B59B673DF17 /* Pods-Toronto311.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.debug.xcconfig"; sourceTree = "<group>"; };
 		980C343EB391F94712ABD384 /* Pods_Toronto311.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Toronto311.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9B3A5801A3E242C550F66F6 /* Pods-Toronto311.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.release.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.release.xcconfig"; sourceTree = "<group>"; };
@@ -174,6 +178,8 @@
 				4CB76E0021A1034C001E0015 /* UIView.swift */,
 				4CB76E0221A1088C001E0015 /* UIViewController.swift */,
 				4CBDDB3E21A63FC000E79E7B /* Optional.swift */,
+				4CE73E5F21ABBA0600EA1553 /* UIImage.swift */,
+				4CE73E6121ABBA2100EA1553 /* CGSize.swift */,
 				4CBDDB4021A6400A00E79E7B /* Misc.swift */,
 			);
 			path = Extensions;
@@ -404,6 +410,8 @@
 				4C077C0A218F4B7100C8AFD7 /* MKMap.swift in Sources */,
 				4CBD6C94218AA80E005E6FE6 /* CLLocation.swift in Sources */,
 				4CB76E0121A1034C001E0015 /* UIView.swift in Sources */,
+				4CE73E6221ABBA2100EA1553 /* CGSize.swift in Sources */,
+				4CE73E6021ABBA0600EA1553 /* UIImage.swift in Sources */,
 				4C7DC5132187E04700F72BDC /* DataImporter.swift in Sources */,
 				4C95AC57219D2DFA00A58E32 /* Fetchable.swift in Sources */,
 				4C80AE292192A521006DF2D6 /* DataController.swift in Sources */,

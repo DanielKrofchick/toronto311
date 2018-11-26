@@ -9,24 +9,6 @@
 import MapKit
 
 extension MKMapView {
-//    func polygon(for point: CGPoint) -> MKPolygon? {
-//        var intersectPoly: MKPolygon?
-//
-//        let coord = convert(point, toCoordinateFrom: self)
-//
-//        for overlay in overlays {
-//            if let overlay = overlay as? MKPolygon {
-//                let renderer = MKPolygonRenderer(polygon: overlay)
-//                if renderer.path.contains(renderer.point(for: MKMapPoint(coord))) {
-//                    intersectPoly = overlay
-//                    break
-//                }
-//            }
-//        }
-//
-//        return intersectPoly
-//    }
-        
     func overlays(for point: CGPoint) -> [MKOverlay] {
         var intersect = [MKOverlay]()
         
