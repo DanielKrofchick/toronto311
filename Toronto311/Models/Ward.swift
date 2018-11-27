@@ -235,30 +235,10 @@ extension Ward: MKAnnotation {
 }
 
 extension Ward {
-    private func shape() -> MKShape? {
+    func shape() -> MKShape? {
         return features().first?.geometries?.first?.boundary()?.mapShape()
     }
-    
-    func addOverlay(to map: MKMapView) {
-        if shape() is MKPolygon {
-            addPolygon(to: map)
-        } else if shape() is MKPolyline {
-            addPolyline(to: map)
-        }
-    }
-    
-    func addPolygon(to map: MKMapView) {
-        if let overlay = shape() as? MKPolygon {
-            map.addOverlay(overlay.wardPolygon(self))
-        }
-    }
-    
-    func addPolyline(to map: MKMapView) {
-        if let overlay = shape() as? MKPolyline {
-            map.addOverlay(overlay.wardPolyline(self))
-        }
-    }
-    
+        
     func addAnnotation(to map: MKMapView) {
         map.addAnnotation(self)
     }

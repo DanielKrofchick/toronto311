@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIViewController {
-    func addAndConfigureChild(_ child: UIViewController) {
+    func doAddChild(_ child: UIViewController) {
         addChild(child)
         view.addSubview(child.view)
         child.didMove(toParent: self)

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C685EE4B59A750EA8DF830B /* Pods_Toronto311.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 980C343EB391F94712ABD384 /* Pods_Toronto311.framework */; };
+		4C040E4721ACFA78004A1DD2 /* WardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C040E4621ACFA78004A1DD2 /* WardItem.swift */; };
 		4C077C0A218F4B7100C8AFD7 /* MKMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C077C09218F4B7100C8AFD7 /* MKMap.swift */; };
 		4C077C0C218F573D00C8AFD7 /* MKPolygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C077C0B218F573D00C8AFD7 /* MKPolygon.swift */; };
 		4C28C337218D31AF00542A3B /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C28C336218D31AF00542A3B /* SWXMLHash.framework */; };
@@ -28,8 +29,6 @@
 		4C7DC51721880D5300F72BDC /* ServiceCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC51621880D5300F72BDC /* ServiceCodes.swift */; };
 		4C80AE272192A198006DF2D6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4C80AE252192A198006DF2D6 /* Model.xcdatamodeld */; };
 		4C80AE292192A521006DF2D6 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C80AE282192A521006DF2D6 /* DataController.swift */; };
-		4C95AC53219D2A7500A58E32 /* WardPolygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C95AC52219D2A7500A58E32 /* WardPolygon.swift */; };
-		4C95AC55219D2AB000A58E32 /* WardPolyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C95AC54219D2AB000A58E32 /* WardPolyline.swift */; };
 		4C95AC57219D2DFA00A58E32 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C95AC56219D2DFA00A58E32 /* Fetchable.swift */; };
 		4CB5059F2199312200CA1F98 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB5059E2199312200CA1F98 /* OSLog.swift */; };
 		4CB505A12199373900CA1F98 /* WardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB505A02199373900CA1F98 /* WardViewModel.swift */; };
@@ -50,6 +49,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C040E4621ACFA78004A1DD2 /* WardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardItem.swift; sourceTree = "<group>"; };
 		4C077C09218F4B7100C8AFD7 /* MKMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMap.swift; sourceTree = "<group>"; };
 		4C077C0B218F573D00C8AFD7 /* MKPolygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKPolygon.swift; sourceTree = "<group>"; };
 		4C28C336218D31AF00542A3B /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SWXMLHash.framework; path = Carthage/Build/iOS/SWXMLHash.framework; sourceTree = "<group>"; };
@@ -72,8 +72,6 @@
 		4C7DC51621880D5300F72BDC /* ServiceCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCodes.swift; sourceTree = "<group>"; };
 		4C80AE262192A198006DF2D6 /* Ward.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ward.xcdatamodel; sourceTree = "<group>"; };
 		4C80AE282192A521006DF2D6 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
-		4C95AC52219D2A7500A58E32 /* WardPolygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardPolygon.swift; sourceTree = "<group>"; };
-		4C95AC54219D2AB000A58E32 /* WardPolyline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardPolyline.swift; sourceTree = "<group>"; };
 		4C95AC56219D2DFA00A58E32 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		4CB5059E2199312200CA1F98 /* OSLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLog.swift; sourceTree = "<group>"; };
 		4CB505A02199373900CA1F98 /* WardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardViewModel.swift; sourceTree = "<group>"; };
@@ -191,6 +189,7 @@
 				4C7DC4FB2186A13400F72BDC /* ViewController.swift */,
 				4CB76E0421A25E90001E0015 /* WardSearchController.swift */,
 				4CB505A02199373900CA1F98 /* WardViewModel.swift */,
+				4C040E4621ACFA78004A1DD2 /* WardItem.swift */,
 				4CB76DFE219E7541001E0015 /* Sheet.swift */,
 				4C7DC4FD2186A13400F72BDC /* Main.storyboard */,
 			);
@@ -215,8 +214,6 @@
 				4C7DC51621880D5300F72BDC /* ServiceCodes.swift */,
 				4C28C33C218EA1CB00542A3B /* Ward.swift */,
 				4CD236D821A7B7B500CA9ED2 /* WardSource.swift */,
-				4C95AC52219D2A7500A58E32 /* WardPolygon.swift */,
-				4C95AC54219D2AB000A58E32 /* WardPolyline.swift */,
 				4C95AC56219D2DFA00A58E32 /* Fetchable.swift */,
 				4C80AE252192A198006DF2D6 /* Model.xcdatamodeld */,
 			);
@@ -406,7 +403,6 @@
 				4C7DC5112187DE6A00F72BDC /* FireStation.swift in Sources */,
 				4CB76E0521A25E90001E0015 /* WardSearchController.swift in Sources */,
 				4C7DC51721880D5300F72BDC /* ServiceCodes.swift in Sources */,
-				4C95AC55219D2AB000A58E32 /* WardPolyline.swift in Sources */,
 				4C077C0A218F4B7100C8AFD7 /* MKMap.swift in Sources */,
 				4CBD6C94218AA80E005E6FE6 /* CLLocation.swift in Sources */,
 				4CB76E0121A1034C001E0015 /* UIView.swift in Sources */,
@@ -416,9 +412,9 @@
 				4C95AC57219D2DFA00A58E32 /* Fetchable.swift in Sources */,
 				4C80AE292192A521006DF2D6 /* DataController.swift in Sources */,
 				4C7DC50C2186A16200F72BDC /* API.swift in Sources */,
+				4C040E4721ACFA78004A1DD2 /* WardItem.swift in Sources */,
 				4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */,
 				4CBDDB4121A6400A00E79E7B /* Misc.swift in Sources */,
-				4C95AC53219D2A7500A58E32 /* WardPolygon.swift in Sources */,
 				4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
