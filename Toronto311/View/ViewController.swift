@@ -53,6 +53,7 @@ class ViewController: UIViewController {
         }
         
         doAddChild(sheet)
+        sheet.textDidChange = {[weak self] in self?.load()}
         sheet.tableView.allowsMultipleSelection = true
         sheet.tableView.delegate = self
         sheet.tableView.dataSource = self
@@ -93,24 +94,13 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let item = viewModel.item(for: indexPath) {
-            toggle(item, withTableSelect: false)
+            toggleMapSelect(item)
         }
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         if let item = viewModel.item(for: indexPath) {
-            toggle(item, withTableSelect: false)
-        }
-    }
-    
-    func toggle(_ item: WardItem, withTableSelect: Bool) {
-        if let overlay = item.overlay {
-            item.isSelected.toggle()
-            if withTableSelect {
-                toggleTableSelect(for: item)
-            }
-            map.removeOverlay(overlay)
-            map.addOverlay(overlay)
+            toggleMapSelect(item)
         }
     }
 }
@@ -195,17 +185,25 @@ extension ViewController {
     private func toggleOverlays(at tap: UITapGestureRecognizer) {
         map.overlays(for: tap.location(in: map)).forEach { (overlay) in
             if let item = viewModel.item(for: overlay) {
-                toggle(item, withTableSelect: true)
+                toggleTableSelect(for: item)
+                toggleMapSelect(item)
             }
         }
     }
     
     private func toggleOverlays(nearest tap: UITapGestureRecognizer) {
-        if let overlay = map.polyline(for: tap.location(in: map)) {
-            if let item = viewModel.item(for: overlay) {
-                toggle(item, withTableSelect: true)
-            }
+        if
+            let overlay = map.polyline(for: tap.location(in: map)),
+            let item = viewModel.item(for: overlay)
+        {
+            toggleTableSelect(for: item)
+            toggleMapSelect(item)
         }
+    }
+    
+    func toggleMapSelect(_ item: WardItem) {
+        item.isSelected.toggle()
+        viewModel.addOverlays(item: item, map: map)
     }
     
     private func toggleTableSelect(for item: WardItem) {
@@ -229,42 +227,47 @@ extension ViewController {
     }
     
     private func load() {
-        let selected = wardButtons.filter({ $0.button.isSelected })
-        let arguments = selected.map({ $0.wardSource.rawValue })
-        let format = selected.reduce("") { (result, _) -> String in
-            return result + (result.isEmpty ? "" : " OR ") + "source = %@"
-        }
-        
-        if format.isEmpty {
-            viewModel.items = []
-        } else {
-            measure(name: "fetch-\(arguments)") {
-                if let wards = try? Ward.objects(
-                    context: DataController.shared.context,
-                    predicate: NSPredicate(format: format, argumentArray: arguments),
-                    ascending: true)
-                {
-                    viewModel.items = wards.map({WardItem(ward: $0)})
-                }
+        loadModel()
+        loadInterface()
+    }
+    
+    private func loadModel() {
+        measure(name: "fetch") {
+            if let wards = try? Ward.objects(
+                context: DataController.shared.context,
+                predicate: loadPredicate(),
+                ascending: true)
+            {
+                viewModel.items = wards.map{WardItem(ward: $0)}
             }
         }
+    }
+    
+    private func loadPredicate() -> NSPredicate {
+        let selected = wardButtons.filter({ $0.button.isSelected })
+        let wardPredicates = selected.map({NSPredicate(format: "source = %@", $0.wardSource.rawValue)})
+        var predicate = NSCompoundPredicate(orPredicateWithSubpredicates: wardPredicates)
+        if
+            let text = sheet.searchBar.text,
+            !text.isEmpty
+        {
+            let searchPredicate = NSPredicate(format: "areaName CONTAINS[cd] %@", text)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate,
+                searchPredicate
+                ])
+        }
         
+        return predicate
+    }
+    
+    private func loadInterface() {
         DispatchQueue.main.async {
             [weak self, map = map] in
-            map.removeAnnotations(map.annotations)
-            map.removeOverlays(map.overlays)
-            self?.viewModel.items.forEach({
-                [map = map] in
-                if var overlay = $0.ward.shape() as? MKOverlay {
-                    if let o = overlay as? MKPolygon {
-                        overlay = o.polyline()
-                    }
-                    $0.overlay = overlay
-                    map.addOverlay(overlay)
-                    map.addAnnotation($0.ward)
-                }
-            })
-            self?.sheet.tableView.reloadData()
+            guard let self = self else {return}
+            self.viewModel.configureOverlays(map: map)
+            self.sheet.tableView.reloadData()
+            self.viewModel.configureSelectedCells(tableView: self.sheet.tableView)
         }
     }
 }

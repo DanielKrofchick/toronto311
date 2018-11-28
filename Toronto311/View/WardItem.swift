@@ -87,3 +87,9 @@ extension WardItem: Equatable {
         return lhs.ward == rhs.ward
     }
 }
+
+extension WardItem: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ward)
+    }
+}

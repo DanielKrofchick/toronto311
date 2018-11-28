@@ -10,7 +10,21 @@ import UIKit
 import MapKit
 
 class WardViewModel {
-    var items = [WardItem]()
+    var items = [WardItem]() {
+        willSet {
+            cache.subtract(items)
+            cache.formUnion(items)
+        }
+        didSet {
+            items.forEach { (item) in
+                if let old = cache.first(where: {$0.ward.areaID == item.ward.areaID}) {
+                    item.isSelected = old.isSelected
+                }
+            }
+        }
+    }
+    
+    private var cache = Set<WardItem>()
     
     func numberOfRows(inSection section: Int) -> Int {
         return items.count
@@ -19,6 +33,9 @@ class WardViewModel {
     func configure(cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = .clear
         cell.textLabel?.font = .preferredFont(forTextStyle: .headline)
+        cell.selectionStyle = .blue
+        cell.selectedBackgroundView = UIView(frame: cell.bounds)
+        cell.selectedBackgroundView?.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 0.4)
         
         guard let item = items[safe: indexPath.row] else {return}
         
@@ -37,12 +54,52 @@ class WardViewModel {
         return button
     }
     
+    func configureOverlays(map: MKMapView) {
+        map.removeAnnotations(map.annotations)
+        map.removeOverlays(map.overlays)
+        items.forEach({
+            [map = map] in
+            if var overlay = $0.ward.shape() as? MKOverlay {
+                if let o = overlay as? MKPolygon {
+                    overlay = o.polyline()
+                }
+                
+                $0.overlay = overlay
+                addOverlays(item: $0, map: map)
+            }
+        })
+    }
+    
+    func addOverlays(item: WardItem, map: MKMapView) {
+        guard let overlay = item.overlay else {return}
+        
+        map.removeOverlay(overlay)
+        if item.isSelected {
+            map.addOverlay(overlay)
+            map.addAnnotation(item.ward)
+        } else {
+            map.insertOverlay(overlay, at: 0)
+            map.removeAnnotation(item.ward)
+        }
+    }
+    
+    func configureSelectedCells(tableView: UITableView) {
+        items.forEach { (item) in
+            if
+                item.isSelected,
+                let indexPath = indexPath(for: item)
+            {
+                tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            }
+        }
+    }
+    
     func item(for indexPath: IndexPath) -> WardItem? {
         return items[safe: indexPath.row]
     }
 
     func item(for ward: Ward) -> WardItem? {
-        return items.first{$0.ward == ward}
+        return items.first{$0.ward.areaID == ward.areaID}
     }
 
     func item(for overlay: MKOverlay) -> WardItem? {
@@ -68,5 +125,9 @@ class WardViewModel {
         }
         
         return result
+    }
+    
+    func selectedItems() -> [WardItem] {
+        return items.filter({$0.isSelected})
     }
 }

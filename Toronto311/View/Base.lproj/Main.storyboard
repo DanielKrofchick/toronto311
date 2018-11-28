@@ -62,7 +62,7 @@
                                     <string>Title</string>
                                 </scopeButtonTitles>
                                 <connections>
-                                    <outlet property="delegate" destination="Ohs-K1-8kD" id="ITK-LU-bp6"/>
+                                    <outlet property="delegate" destination="Ohs-K1-8kD" id="Yz1-1a-n0w"/>
                                 </connections>
                             </searchBar>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="7ns-lS-lwH">

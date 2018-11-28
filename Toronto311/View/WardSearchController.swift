@@ -12,8 +12,8 @@ class WardSearchController: Sheet {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var filters: UIStackView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var wardSource1: UIButton!
-    @IBOutlet weak var wardSource2: UIButton!
+    
+    var textDidChange: (()->())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,5 +57,9 @@ extension WardSearchController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         resize(toHeight: minHeight)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        textDidChange?()
     }
 }
