@@ -19,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             os_log("data-loaded", log: .app, type: .info)
         }
 
-        os_log("documents-directory: %@", log: .app, type: .info, NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        os_log("documents-directory: %@", log: .app, type: .info, documentsDirectory)
 
         return true
     }

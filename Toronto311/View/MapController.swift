@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MapController.swift
 //  Toronto311
 //
 //  Created by Daniel Krofchick on 2018-10-28.
@@ -19,12 +19,11 @@ private struct WardButton {
     let button: UIButton
 }
 
-class ViewController: UIViewController {
+class MapController: UIViewController {
     private let map = MKMapView()
     private var mapTap = UITapGestureRecognizer()
     private let viewModel = WardViewModel()
     private var sheet: WardSearchController!
-    
     private var wardButtons = [WardButton]()
 
     private let reuseIdentifier = "reuseIdentifier"
@@ -32,6 +31,38 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        initSheet()
+        initMap()
+        initData()
+        initConstraints()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        map.setRegion(.toronto, animated: true)
+    }
+}
+
+// MARK: - Init -
+extension MapController {
+    private func initMap() {
+        map.delegate = self
+        view.insertSubview(map, belowSubview: sheet.view)
+        
+        mapTap = UITapGestureRecognizer(target: self, action: #selector(mapTapped(_:)))
+        map.addGestureRecognizer(mapTap)
+    }
+    
+    private func initData() {
+        if DataController.shared.isLoaded {
+            loadData()
+        } else {
+            NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .coreDataDidLoad, object: nil)
+        }
+    }
+    
+    private func initSheet() {
         do {
             sheet = try (UIStoryboard(name: "Main", bundle: nil)
                 .instantiateViewController(withIdentifier: "WardSearchController") as? WardSearchController)
@@ -40,50 +71,23 @@ class ViewController: UIViewController {
             fatalError("Unable to instantiate WardSearchController")
         }
         
-        map.delegate = self
-        view.addSubview(map)
-        
-        mapTap = UITapGestureRecognizer(target: self, action: #selector(mapTapped(_:)))
-        map.addGestureRecognizer(mapTap)
-        
-        if DataController.shared.isLoaded {
-            loadData()
-        } else {
-            NotificationCenter.default.addObserver(self, selector: #selector(loadData), name: .coreDataDidLoad, object: nil)
-        }
-        
-        doAddChild(sheet)
+        sheet.loadViewIfNeeded()
         sheet.textDidChange = {[weak self] in self?.load()}
         sheet.tableView.allowsMultipleSelection = true
         sheet.tableView.delegate = self
         sheet.tableView.dataSource = self
         sheet.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         sheet.sheetDelegate = self
-        
+        addChildController(sheet)
+    }
+    
+    private func initWardFilterButtons() {
         WardSource.allCases.sorted().forEach { (wardSource) in
             let button = viewModel.configureFilter(wardSource: wardSource)
             button.addTarget(self, action: #selector(sourceTap(button:)), for: .touchUpInside)
             wardButtons.append(WardButton(wardSource: wardSource, button: button))
             sheet.filters.addArrangedSubview(button)
         }
-        
-        initConstraints()
-    }
-    
-    private func sheetFrame(_ fraction: CGFloat) -> CGRect {
-        return CGRect(x: 0, y: view.frame.height * fraction, width: view.frame.width, height: view.frame.height * (1.0 - fraction))
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        map.setRegion(torontoRegion(), animated: true)
-    }
-    
-    private func torontoRegion() -> MKCoordinateRegion {
-        let radius: CLLocationDistance = 20000
-        let location = CLLocation.toronto + CLLocation(latitude: 0.08, longitude: 0)
-        return MKCoordinateRegion(center: location.coordinate, latitudinalMeters: radius, longitudinalMeters: radius)
     }
     
     private func initConstraints() {
@@ -91,7 +95,8 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDelegate {
+// MARK: - Delegates -
+extension MapController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let item = viewModel.item(for: indexPath) {
             toggleMapSelect(item)
@@ -105,7 +110,7 @@ extension ViewController: UITableViewDelegate {
     }
 }
 
-extension ViewController: UITableViewDataSource {
+extension MapController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfRows(inSection: section)
     }
@@ -119,8 +124,37 @@ extension ViewController: UITableViewDataSource {
     }
 }
 
-extension ViewController {
+extension MapController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var result: MKAnnotationView?
+        
+        if
+            let annotation = annotation as? Ward,
+            let item = viewModel.item(for: annotation)
+        {
+            result = item.annotationView(mapView)
+        }
+        
+        return result
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        return viewModel.item(for: overlay)?.overlayRenderer() ?? MKOverlayRenderer()
+    }
+}
+
+extension MapController: SheetDelegate {
+    func sheet(_ sheet: Sheet, didAnimateToHeight height: CGFloat) {
+        if height == sheet.minHeight {
+            sheet.view.endEditing(true)
+        }
+    }
+}
+
+// MARK: - Data -
+extension MapController {
     @objc func loadData() {
+        initWardFilterButtons()
         DataController.shared.deleteAll()
         DataImporter.processGeo(source: .WARD_WGS84, forEach: {self.process($0)}, completion: {self.finishProcessing()})
         DataImporter.processGeo(source: .icitw_wgs84, forEach: {self.process($0)}, completion: {self.finishProcessing()})
@@ -142,39 +176,9 @@ extension ViewController {
     }
 }
 
-extension ViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        var result: MKAnnotationView?
-        
-        if
-            let annotation = annotation as? Ward,
-            let item = viewModel.item(for: annotation)
-        {
-            result = item.annotationView(mapView)
-        }
-        
-        return result
-    }
-    
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        return viewModel.item(for: overlay)?.overlayRenderer() ?? MKOverlayRenderer()
-    }
-}
-
-extension ViewController: SheetDelegate {
-    func sheet(_ sheet: Sheet, didAnimateToHeight height: CGFloat) {
-        if height == sheet.minHeight {
-            sheet.view.endEditing(true)
-        }
-    }
-}
-
 // MARK: - Selection -
-
-extension ViewController {
-    
+extension MapController {
     // MARK: - Ward -
-    
     @objc func mapTapped(_ tap: UITapGestureRecognizer) {
         if tap.state == .recognized {
             toggleOverlays(at: tap)
@@ -220,7 +224,6 @@ extension ViewController {
     }
     
     // MARK: - WardSource -
-    
     @objc func sourceTap(button: UIButton) {
         button.isSelected = !button.isSelected
         load()

@@ -8,7 +8,7 @@
 
 import CoreData
 
-// From: https://gist.github.com/capttaco/adb38e0d37fbaf9c004e
+// Adapted from: https://gist.github.com/capttaco/adb38e0d37fbaf9c004e
 
 protocol Fetchable
 {

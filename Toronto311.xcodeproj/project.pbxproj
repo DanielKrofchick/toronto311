@@ -17,7 +17,7 @@
 		4C28C33D218EA1CB00542A3B /* Ward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C28C33C218EA1CB00542A3B /* Ward.swift */; };
 		4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4F80A22189603A00EBD4DE /* ServiceType.swift */; };
 		4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4F92186A13400F72BDC /* AppDelegate.swift */; };
-		4C7DC4FC2186A13400F72BDC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FB2186A13400F72BDC /* ViewController.swift */; };
+		4C7DC4FC2186A13400F72BDC /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FB2186A13400F72BDC /* MapController.swift */; };
 		4C7DC4FF2186A13400F72BDC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FD2186A13400F72BDC /* Main.storyboard */; };
 		4C7DC5012186A13400F72BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC5002186A13400F72BDC /* Assets.xcassets */; };
 		4C7DC5042186A13400F72BDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC5022186A13400F72BDC /* LaunchScreen.storyboard */; };
@@ -44,6 +44,7 @@
 		4CBDDB3F21A63FC000E79E7B /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDB3E21A63FC000E79E7B /* Optional.swift */; };
 		4CBDDB4121A6400A00E79E7B /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDB4021A6400A00E79E7B /* Misc.swift */; };
 		4CD236D921A7B7B500CA9ED2 /* WardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD236D821A7B7B500CA9ED2 /* WardSource.swift */; };
+		4CE2C4AC21C35D4A003CBD78 /* MKCoordinateRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE2C4AB21C35D4A003CBD78 /* MKCoordinateRegion.swift */; };
 		4CE73E6021ABBA0600EA1553 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE73E5F21ABBA0600EA1553 /* UIImage.swift */; };
 		4CE73E6221ABBA2100EA1553 /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE73E6121ABBA2100EA1553 /* CGSize.swift */; };
 /* End PBXBuildFile section */
@@ -59,7 +60,7 @@
 		4C4F80A22189603A00EBD4DE /* ServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceType.swift; sourceTree = "<group>"; };
 		4C7DC4F62186A13400F72BDC /* Toronto311.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toronto311.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C7DC4F92186A13400F72BDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4C7DC4FB2186A13400F72BDC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4C7DC4FB2186A13400F72BDC /* MapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		4C7DC4FE2186A13400F72BDC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4C7DC5002186A13400F72BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C7DC5032186A13400F72BDC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 		4CBDDB3E21A63FC000E79E7B /* Optional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
 		4CBDDB4021A6400A00E79E7B /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		4CD236D821A7B7B500CA9ED2 /* WardSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardSource.swift; sourceTree = "<group>"; };
+		4CE2C4AB21C35D4A003CBD78 /* MKCoordinateRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCoordinateRegion.swift; sourceTree = "<group>"; };
 		4CE73E5F21ABBA0600EA1553 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		4CE73E6121ABBA2100EA1553 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
 		938412E85F8F9B59B673DF17 /* Pods-Toronto311.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Toronto311.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311.debug.xcconfig"; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 			children = (
 				4C7DC50E2186B60B00F72BDC /* Dictionary.swift */,
 				4CBD6C93218AA80E005E6FE6 /* CLLocation.swift */,
+				4CE2C4AB21C35D4A003CBD78 /* MKCoordinateRegion.swift */,
 				4C28C33A218E9D1C00542A3B /* MKPolyLine.swift */,
 				4C077C0B218F573D00C8AFD7 /* MKPolygon.swift */,
 				4C077C09218F4B7100C8AFD7 /* MKMap.swift */,
@@ -186,7 +189,7 @@
 		4C95AC58219D3DA500A58E32 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4C7DC4FB2186A13400F72BDC /* ViewController.swift */,
+				4C7DC4FB2186A13400F72BDC /* MapController.swift */,
 				4CB76E0421A25E90001E0015 /* WardSearchController.swift */,
 				4CB505A02199373900CA1F98 /* WardViewModel.swift */,
 				4C040E4621ACFA78004A1DD2 /* WardItem.swift */,
@@ -387,7 +390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C7DC5152187F85A00F72BDC /* ServiceRequest.swift in Sources */,
-				4C7DC4FC2186A13400F72BDC /* ViewController.swift in Sources */,
+				4C7DC4FC2186A13400F72BDC /* MapController.swift in Sources */,
 				4CB76DFF219E7541001E0015 /* Sheet.swift in Sources */,
 				4CB505A12199373900CA1F98 /* WardViewModel.swift in Sources */,
 				4CB76E0321A1088C001E0015 /* UIViewController.swift in Sources */,
@@ -413,6 +416,7 @@
 				4C80AE292192A521006DF2D6 /* DataController.swift in Sources */,
 				4C7DC50C2186A16200F72BDC /* API.swift in Sources */,
 				4C040E4721ACFA78004A1DD2 /* WardItem.swift in Sources */,
+				4CE2C4AC21C35D4A003CBD78 /* MKCoordinateRegion.swift in Sources */,
 				4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */,
 				4CBDDB4121A6400A00E79E7B /* Misc.swift in Sources */,
 				4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */,
