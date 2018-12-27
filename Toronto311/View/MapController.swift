@@ -156,22 +156,15 @@ extension MapController {
     @objc func loadData() {
         initWardFilterButtons()
         DataController.shared.deleteAll()
-        DataImporter.processGeo(source: .WARD_WGS84, forEach: {self.process($0)}, completion: {self.finishProcessing()})
-        DataImporter.processGeo(source: .icitw_wgs84, forEach: {self.process($0)}, completion: {self.finishProcessing()})
-//        DataImporter.processFirestations {print($0)}
-//        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
-//        DataImporter.processServiceList(.disk) {print($0)}
-    }
-    
-    private func process(_ ward: Ward) {
-//        ward.addPolygon(to: map)
-//        ward.addPolyline(to: map)
-//        ward.addAnnotation(to: map)
+        DataImporter.processGeos(completion: {self.finishProcessing()})
+        DataImporter.processServiceRequests(.disk) {self.map.addAnnotation($0)}
     }
     
     private func finishProcessing() {
         measure(name: "save-data") {
             DataController.shared.save()
+            wardButtons.forEach{$0.button.isSelected = true}
+            load()
         }
     }
 }
@@ -182,10 +175,10 @@ extension MapController {
     @objc func mapTapped(_ tap: UITapGestureRecognizer) {
         if tap.state == .recognized {
             toggleOverlays(at: tap)
-//            toggleOverlays(nearest: tap)
         }
     }
     
+    // Finds polygons contianing tap
     private func toggleOverlays(at tap: UITapGestureRecognizer) {
         map.overlays(for: tap.location(in: map)).forEach { (overlay) in
             if let item = viewModel.item(for: overlay) {
@@ -195,6 +188,7 @@ extension MapController {
         }
     }
     
+    // Finds polylines nearest tap
     private func toggleOverlays(nearest tap: UITapGestureRecognizer) {
         if
             let overlay = map.polyline(for: tap.location(in: map)),

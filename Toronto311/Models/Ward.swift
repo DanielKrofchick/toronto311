@@ -198,6 +198,7 @@ extension Ward {
 }
 
 extension Dictionary where Key == String, Value == Any {
+    // Transform ward data sets with different property names to use a common naming scheme
     func transform(for source: WardSource) -> [String: Any] {
         var result = self
 

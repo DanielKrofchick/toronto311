@@ -15,6 +15,9 @@
 		4C28C339218D3D0A00542A3B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4C28C338218D3D0A00542A3B /* Podfile */; };
 		4C28C33B218E9D1C00542A3B /* MKPolyLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C28C33A218E9D1C00542A3B /* MKPolyLine.swift */; };
 		4C28C33D218EA1CB00542A3B /* Ward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C28C33C218EA1CB00542A3B /* Ward.swift */; };
+		4C37DE2B21D4699F001FD46E /* DataImporter+Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C37DE2A21D4699F001FD46E /* DataImporter+Geo.swift */; };
+		4C37DE2D21D469D2001FD46E /* DataImporter+ServiceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C37DE2C21D469D2001FD46E /* DataImporter+ServiceRequest.swift */; };
+		4C37DE2F21D469FC001FD46E /* DataImporter+ServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C37DE2E21D469FC001FD46E /* DataImporter+ServiceType.swift */; };
 		4C4F80A32189603A00EBD4DE /* ServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4F80A22189603A00EBD4DE /* ServiceType.swift */; };
 		4C7DC4FA2186A13400F72BDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4F92186A13400F72BDC /* AppDelegate.swift */; };
 		4C7DC4FC2186A13400F72BDC /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC4FB2186A13400F72BDC /* MapController.swift */; };
@@ -23,7 +26,6 @@
 		4C7DC5042186A13400F72BDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DC5022186A13400F72BDC /* LaunchScreen.storyboard */; };
 		4C7DC50C2186A16200F72BDC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC50B2186A16200F72BDC /* API.swift */; };
 		4C7DC50F2186B60B00F72BDC /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC50E2186B60B00F72BDC /* Dictionary.swift */; };
-		4C7DC5112187DE6A00F72BDC /* FireStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC5102187DE6A00F72BDC /* FireStation.swift */; };
 		4C7DC5132187E04700F72BDC /* DataImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC5122187E04700F72BDC /* DataImporter.swift */; };
 		4C7DC5152187F85A00F72BDC /* ServiceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */; };
 		4C7DC51721880D5300F72BDC /* ServiceCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DC51621880D5300F72BDC /* ServiceCodes.swift */; };
@@ -57,6 +59,9 @@
 		4C28C338218D3D0A00542A3B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		4C28C33A218E9D1C00542A3B /* MKPolyLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKPolyLine.swift; sourceTree = "<group>"; };
 		4C28C33C218EA1CB00542A3B /* Ward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ward.swift; sourceTree = "<group>"; };
+		4C37DE2A21D4699F001FD46E /* DataImporter+Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataImporter+Geo.swift"; sourceTree = "<group>"; };
+		4C37DE2C21D469D2001FD46E /* DataImporter+ServiceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataImporter+ServiceRequest.swift"; sourceTree = "<group>"; };
+		4C37DE2E21D469FC001FD46E /* DataImporter+ServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataImporter+ServiceType.swift"; sourceTree = "<group>"; };
 		4C4F80A22189603A00EBD4DE /* ServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceType.swift; sourceTree = "<group>"; };
 		4C7DC4F62186A13400F72BDC /* Toronto311.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toronto311.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C7DC4F92186A13400F72BDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,7 +72,6 @@
 		4C7DC5052186A13500F72BDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C7DC50B2186A16200F72BDC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		4C7DC50E2186B60B00F72BDC /* Dictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
-		4C7DC5102187DE6A00F72BDC /* FireStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStation.swift; sourceTree = "<group>"; };
 		4C7DC5122187E04700F72BDC /* DataImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataImporter.swift; sourceTree = "<group>"; };
 		4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceRequest.swift; sourceTree = "<group>"; };
 		4C7DC51621880D5300F72BDC /* ServiceCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCodes.swift; sourceTree = "<group>"; };
@@ -123,6 +127,9 @@
 			children = (
 				4C80AE282192A521006DF2D6 /* DataController.swift */,
 				4C7DC5122187E04700F72BDC /* DataImporter.swift */,
+				4C37DE2A21D4699F001FD46E /* DataImporter+Geo.swift */,
+				4C37DE2C21D469D2001FD46E /* DataImporter+ServiceRequest.swift */,
+				4C37DE2E21D469FC001FD46E /* DataImporter+ServiceType.swift */,
 				4C7DC50B2186A16200F72BDC /* API.swift */,
 			);
 			path = Data;
@@ -211,7 +218,6 @@
 		4CBD6C95218AA862005E6FE6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				4C7DC5102187DE6A00F72BDC /* FireStation.swift */,
 				4C7DC5142187F85A00F72BDC /* ServiceRequest.swift */,
 				4C4F80A22189603A00EBD4DE /* ServiceType.swift */,
 				4C7DC51621880D5300F72BDC /* ServiceCodes.swift */,
@@ -395,6 +401,8 @@
 				4CB505A12199373900CA1F98 /* WardViewModel.swift in Sources */,
 				4CB76E0321A1088C001E0015 /* UIViewController.swift in Sources */,
 				4C80AE272192A198006DF2D6 /* Model.xcdatamodeld in Sources */,
+				4C37DE2B21D4699F001FD46E /* DataImporter+Geo.swift in Sources */,
+				4C37DE2D21D469D2001FD46E /* DataImporter+ServiceRequest.swift in Sources */,
 				4C7DC50F2186B60B00F72BDC /* Dictionary.swift in Sources */,
 				4CD236D921A7B7B500CA9ED2 /* WardSource.swift in Sources */,
 				4C28C33D218EA1CB00542A3B /* Ward.swift in Sources */,
@@ -403,11 +411,11 @@
 				4CB5059F2199312200CA1F98 /* OSLog.swift in Sources */,
 				4CBDDB3F21A63FC000E79E7B /* Optional.swift in Sources */,
 				4C28C33B218E9D1C00542A3B /* MKPolyLine.swift in Sources */,
-				4C7DC5112187DE6A00F72BDC /* FireStation.swift in Sources */,
 				4CB76E0521A25E90001E0015 /* WardSearchController.swift in Sources */,
 				4C7DC51721880D5300F72BDC /* ServiceCodes.swift in Sources */,
 				4C077C0A218F4B7100C8AFD7 /* MKMap.swift in Sources */,
 				4CBD6C94218AA80E005E6FE6 /* CLLocation.swift in Sources */,
+				4C37DE2F21D469FC001FD46E /* DataImporter+ServiceType.swift in Sources */,
 				4CB76E0121A1034C001E0015 /* UIView.swift in Sources */,
 				4CE73E6221ABBA2100EA1553 /* CGSize.swift in Sources */,
 				4CE73E6021ABBA0600EA1553 /* UIImage.swift in Sources */,
