@@ -2,7 +2,7 @@
 This project visualizes data sets from [Toronto Open Data](https://www.toronto.ca/city-government/data-research-maps/open-data/).
 
 ## Getting started
-Clone the repsitory,
+Clone the repository,
 ```
 git clone https://github.com/DanielKrofchick/toronto311.git
 ```
@@ -11,8 +11,9 @@ and build with Xcode.
 ## Shapefile to GEOJSON
 Toronto Open Data sometimes provides data sets as a [Shapefile](https://en.wikipedia.org/wiki/Shapefile). This data is converted to GEOJSON using [mapshaper](https://mapshaper.org) and ingested with [GEOSwift](https://github.com/GEOSwift/GEOSwift).
 
-## Archituecture
+## Architecture
 Data is persisted using [CoreData](https://developer.apple.com/documentation/coredata).
+Uses a custom built bottom sheet controller, similar to iOS maps [Sheet.swift](https://github.com/DanielKrofchick/toronto311/blob/master/Toronto311/View/Sheet.swift).
 
 ## Data sets:
 Supported:
