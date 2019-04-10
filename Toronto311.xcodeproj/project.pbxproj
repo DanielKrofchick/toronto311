@@ -11,7 +11,6 @@
 		4C040E4721ACFA78004A1DD2 /* WardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C040E4621ACFA78004A1DD2 /* WardItem.swift */; };
 		4C077C0A218F4B7100C8AFD7 /* MKMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C077C09218F4B7100C8AFD7 /* MKMap.swift */; };
 		4C077C0C218F573D00C8AFD7 /* MKPolygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C077C0B218F573D00C8AFD7 /* MKPolygon.swift */; };
-		4C28C337218D31AF00542A3B /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C28C336218D31AF00542A3B /* SWXMLHash.framework */; };
 		4C28C339218D3D0A00542A3B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4C28C338218D3D0A00542A3B /* Podfile */; };
 		4C28C33B218E9D1C00542A3B /* MKPolyLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C28C33A218E9D1C00542A3B /* MKPolyLine.swift */; };
 		4C28C33D218EA1CB00542A3B /* Ward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C28C33C218EA1CB00542A3B /* Ward.swift */; };
@@ -55,7 +54,6 @@
 		4C040E4621ACFA78004A1DD2 /* WardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardItem.swift; sourceTree = "<group>"; };
 		4C077C09218F4B7100C8AFD7 /* MKMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMap.swift; sourceTree = "<group>"; };
 		4C077C0B218F573D00C8AFD7 /* MKPolygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKPolygon.swift; sourceTree = "<group>"; };
-		4C28C336218D31AF00542A3B /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SWXMLHash.framework; path = Carthage/Build/iOS/SWXMLHash.framework; sourceTree = "<group>"; };
 		4C28C338218D3D0A00542A3B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		4C28C33A218E9D1C00542A3B /* MKPolyLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKPolyLine.swift; sourceTree = "<group>"; };
 		4C28C33C218EA1CB00542A3B /* Ward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ward.swift; sourceTree = "<group>"; };
@@ -105,7 +103,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C28C337218D31AF00542A3B /* SWXMLHash.framework in Frameworks */,
 				1C685EE4B59A750EA8DF830B /* Pods_Toronto311.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,7 +206,6 @@
 		4CBD6C80218A9381005E6FE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4C28C336218D31AF00542A3B /* SWXMLHash.framework */,
 				980C343EB391F94712ABD384 /* Pods_Toronto311.framework */,
 			);
 			name = Frameworks;
@@ -334,7 +330,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Toronto311/Pods-Toronto311-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GEOSwift/GEOSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/geos/geos.framework",
 			);
@@ -347,7 +343,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Toronto311/Pods-Toronto311-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Toronto311/Pods-Toronto311-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		4C4F809C21893C0000EBD4DE /* Swiftlint */ = {
@@ -376,13 +372,11 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/SWXMLHash.framework",
 			);
 			name = Carthage;
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SWXMLHash.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
