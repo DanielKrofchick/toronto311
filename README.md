@@ -13,6 +13,7 @@ Toronto Open Data sometimes provides data sets as a [Shapefile](https://en.wikip
 
 ## Architecture
 Data is persisted using [CoreData](https://developer.apple.com/documentation/coredata).
+
 Uses a custom built bottom sheet controller, similar to iOS maps [Sheet.swift](https://github.com/DanielKrofchick/toronto311/blob/master/Toronto311/View/Sheet.swift).
 
 ## Data sets:
